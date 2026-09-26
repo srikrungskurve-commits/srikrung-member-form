@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Srikrung S-Kurve Member Form</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      background: #f5f6f8;
+      color: #222;
+    }
+
+    .container {
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.08);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 25px;
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    .section-title {
+      margin-top: 25px;
+      margin-bottom: 12px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 6px;
+      font-weight: 600;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #d7d7d7;
+      border-radius: 10px;
+      font-size: 16px;
+      background: #fff;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 16px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .check-btn {
+      background: #eef1f4;
+      color: #222;
+    }
+
+    .confirm-btn {
+      background: #06c755;
+      color: #fff;
+    }
+
+    .confirm-btn:disabled,
+    .check-btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .result {
+      display: none;
+      margin-top: 14px;
+      padding: 15px;
+      border-radius: 10px;
+      background: #f0fff5;
+      border: 1px solid #b9e8c9;
+    }
+
+    .error {
+      display: none;
+      margin-top: 14px;
+      padding: 15px;
+      border-radius: 10px;
+      background: #fff3f3;
+      border: 1px solid #efc0c0;
+      color: #a00000;
+    }
+
+    .summary {
+      display: none;
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 12px;
+      background: #f7f8fa;
+    }
+
+    .summary p {
+      margin: 8px 0;
+    }
+
+    .note {
+      font-size: 13px;
+      color: #777;
+      margin-top: 6px;
+    }
+
+    #successBox {
+      display: none;
+      text-align: center;
+      padding: 25px 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="card">
+
+    <div id="formArea">
+
+      <h1>Srikrung S-Kurve</h1>
+      <div class="subtitle">ลงทะเบียนข้อมูลสมาชิก</div>
+
+      <div class="section-title">ข้อมูลสมาชิก</div>
+
+      <label>รหัสสมาชิก *</label>
+      <input id="member_id" type="text" placeholder="กรอกรหัสสมาชิกศรีกรุง">
+
+      <label>ชื่อ-นามสกุล *</label>
+      <input id="full_name" type="text" placeholder="กรอกชื่อ-นามสกุล">
+
+      <label>เบอร์โทรศัพท์ *</label>
+      <input id="phone" type="tel" placeholder="เช่น 0812345678">
+
+      <label>ชื่อเล่น</label>
+      <input id="nickname" type="text" placeholder="ชื่อเล่น">
+
+      <label>จังหวัด</label>
+      <input id="province" type="text" placeholder="จังหวัด">
+
+      <label>รายได้ที่คาดหวัง</label>
+      <input id="expected_income" type="text" placeholder="เช่น 10,000 บาท/เดือน">
+
+      <label>ความสนใจ</label>
+      <select id="interest_type">
+        <option value="">-- เลือกความสนใจ --</option>
+        <option value="เพื่อซื้อประกัน">เพื่อซื้อประกัน</option>
+        <option value="ต้องการราคาทุน">ต้องการราคาทุน</option>
+        <option value="ต้องการรายได้เพิ่ม">ต้องการรายได้เพิ่ม</option>
+        <option value="ต้องการทำธุรกิจส่วนตัว">ต้องการทำธุรกิจส่วนตัว</option>
+        <option value="เพื่อซื้อราคาทุนและต้องการรายได้เพิ่ม">
+          เพื่อซื้อราคาทุนและต้องการรายได้เพิ่ม
+        </option>
+        <option value="ต้องการรับเว็บไซต์ ฟรี!">ต้องการรับเว็บไซต์ ฟรี!</option>
+        <option value="อื่นๆ">อื่นๆ</option>
+      </select>
+
+      <div class="section-title">ข้อมูลผู้แนะนำ</div>
+
+      <label>รหัสสมาชิกผู้แนะนำ</label>
+      <input id="referrer_member_id" type="text"
+             placeholder="กรอกรหัสสมาชิกผู้แนะนำ">
+
+      <button id="checkReferrerBtn"
+              class="check-btn"
+              type="button"
+              onclick="checkReferrer()">
+        ตรวจสอบผู้แนะนำ
+      </button>
+
+      <div id="referrerResult" class="result">
+        <strong>พบข้อมูลผู้แนะนำ</strong>
+        <p>
+          รหัสสมาชิก:
+          <span id="verifiedReferrerId"></span>
+        </p>
+        <p>
+          ชื่อ:
+          <span id="verifiedReferrerName"></span>
+        </p>
+        <div class="note">
+          กรุณาตรวจสอบว่าข้อมูลผู้แนะนำถูกต้องก่อนยืนยัน
+        </div>
+      </div>
+
+      <div id="referrerError" class="error"></div>
+
+      <button class="confirm-btn"
+              type="button"
+              onclick="prepareConfirmation()">
+        ตรวจสอบข้อมูลก่อนยืนยัน
+      </button>
+
+      <div id="summary" class="summary">
+
+        <div class="section-title" style="margin-top:0;">
+          ตรวจสอบข้อมูล
+        </div>
+
+        <p><strong>รหัสสมาชิก:</strong>
+          <span id="s_member_id"></span>
+        </p>
+
+        <p><strong>ชื่อ-นามสกุล:</strong>
+          <span id="s_full_name"></span>
+        </p>
+
+        <p><strong>เบอร์โทร:</strong>
+          <span id="s_phone"></span>
+        </p>
+
+        <p><strong>ชื่อเล่น:</strong>
+          <span id="s_nickname"></span>
+        </p>
+
+        <p><strong>จังหวัด:</strong>
+          <span id="s_province"></span>
+        </p>
+
+        <p><strong>ความสนใจ:</strong>
+          <span id="s_interest"></span>
+        </p>
+
+        <p><strong>รหัสผู้แนะนำ:</strong>
+          <span id="s_referrer_id"></span>
+        </p>
+
+        <p><strong>ชื่อผู้แนะนำ:</strong>
+          <span id="s_referrer_name"></span>
+        </p>
+
+        <button id="submitBtn"
+                class="confirm-btn"
+                type="button"
+                onclick="submitMember()">
+          ยืนยันและส่งข้อมูล
+        </button>
+
+      </div>
+
+    </div>
+
+    <div id="successBox">
+      <h2>ส่งข้อมูลเรียบร้อยแล้ว</h2>
+      <p>ระบบได้รับข้อมูลของคุณแล้ว</p>
+      <p>ขอบคุณครับ</p>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+
+const MAKE_WEBHOOK =
+  "https://hook.eu1.make.com/7dkl5tkjddqcy9ghicfepaiu9sg86v11";
+
+let verifiedReferrer = null;
+
+
+/* ------------------------------
+   ตรวจสอบผู้แนะนำ
+--------------------------------*/
+
+async function checkReferrer() {
+
+  const referrerId =
+    document.getElementById("referrer_member_id")
+      .value.trim();
+
+  const resultBox =
+    document.getElementById("referrerResult");
+
+  const errorBox =
+    document.getElementById("referrerError");
+
+  const button =
+    document.getElementById("checkReferrerBtn");
+
+  verifiedReferrer = null;
+  resultBox.style.display = "none";
+  errorBox.style.display = "none";
+
+  if (!referrerId) {
+    errorBox.textContent =
+      "กรุณากรอกรหัสสมาชิกผู้แนะนำ";
+    errorBox.style.display = "block";
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "กำลังตรวจสอบ...";
+
+  try {
+
+    const response = await fetch(MAKE_WEBHOOK, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        action: "CHECK_REFERRER",
+        referrer_member_id: referrerId
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error("HTTP " + response.status);
+    }
+
+    const data = await response.json();
+
+    if (data.success && data.member_id) {
+
+      verifiedReferrer = {
+        member_id: data.member_id,
+        full_name: data.full_name || ""
+      };
+
+      document.getElementById(
+        "verifiedReferrerId"
+      ).textContent = data.member_id;
+
+      document.getElementById(
+        "verifiedReferrerName"
+      ).textContent = data.full_name || "-";
+
+      resultBox.style.display = "block";
+
+    } else {
+
+      errorBox.textContent =
+        "ไม่พบรหัสสมาชิกผู้แนะนำ กรุณาตรวจสอบอีกครั้ง";
+
+      errorBox.style.display = "block";
+    }
+
+  } catch (error) {
+
+    errorBox.textContent =
+      "ไม่สามารถตรวจสอบข้อมูลได้ กรุณาลองใหม่อีกครั้ง";
+
+    errorBox.style.display = "block";
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent = "ตรวจสอบผู้แนะนำ";
+  }
+}
+
+
+/* ------------------------------
+   ตรวจสอบข้อมูลก่อนส่ง
+--------------------------------*/
+
+function prepareConfirmation() {
+
+  const memberId =
+    document.getElementById("member_id")
+      .value.trim();
+
+  const fullName =
+    document.getElementById("full_name")
+      .value.trim();
+
+  const phone =
+    document.getElementById("phone")
+      .value.trim();
+
+  const referrerId =
+    document.getElementById("referrer_member_id")
+      .value.trim();
+
+  if (!memberId || !fullName || !phone) {
+
+    alert(
+      "กรุณากรอกรหัสสมาชิก ชื่อ-นามสกุล และเบอร์โทรศัพท์ให้ครบ"
+    );
+
+    return;
+  }
+
+  /*
+    ถ้ากรอกรหัสผู้แนะนำ
+    ต้องผ่านการตรวจสอบก่อน
+  */
+
+  if (referrerId) {
+
+    if (
+      !verifiedReferrer ||
+      verifiedReferrer.member_id !== referrerId
+    ) {
+
+      alert(
+        "กรุณากดตรวจสอบรหัสผู้แนะนำก่อนยืนยันข้อมูล"
+      );
+
+      return;
+    }
+  }
+
+  document.getElementById(
+    "s_member_id"
+  ).textContent = memberId;
+
+  document.getElementById(
+    "s_full_name"
+  ).textContent = fullName;
+
+  document.getElementById(
+    "s_phone"
+  ).textContent = phone;
+
+  document.getElementById(
+    "s_nickname"
+  ).textContent =
+    document.getElementById("nickname").value || "-";
+
+  document.getElementById(
+    "s_province"
+  ).textContent =
+    document.getElementById("province").value || "-";
+
+  document.getElementById(
+    "s_interest"
+  ).textContent =
+    document.getElementById("interest_type").value || "-";
+
+  document.getElementById(
+    "s_referrer_id"
+  ).textContent =
+    verifiedReferrer
+      ? verifiedReferrer.member_id
+      : "-";
+
+  document.getElementById(
+    "s_referrer_name"
+  ).textContent =
+    verifiedReferrer
+      ? verifiedReferrer.full_name
+      : "-";
+
+  document.getElementById(
+    "summary"
+  ).style.display = "block";
+
+  document.getElementById(
+    "summary"
+  ).scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
+
+/* ------------------------------
+   ส่งข้อมูลสมาชิกจริง
+--------------------------------*/
+
+async function submitMember() {
+
+  const submitBtn =
+    document.getElementById("submitBtn");
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "กำลังส่งข้อมูล...";
+
+  const payload = {
+
+    action: "MEMBER_CUSTOMER_REGISTER",
+
+    member_id:
+      document.getElementById("member_id")
+        .value.trim(),
+
+    full_name:
+      document.getElementById("full_name")
+        .value.trim(),
+
+    phone:
+      document.getElementById("phone")
+        .value.trim(),
+
+    nickname:
+      document.getElementById("nickname")
+        .value.trim(),
+
+    province:
+      document.getElementById("province")
+        .value.trim(),
+
+    expected_income:
+      document.getElementById("expected_income")
+        .value.trim(),
+
+    interest_type:
+      document.getElementById("interest_type")
+        .value,
+
+    referrer_member_id:
+      verifiedReferrer
+        ? verifiedReferrer.member_id
+        : "",
+
+    referrer_name:
+      verifiedReferrer
+        ? verifiedReferrer.full_name
+        : ""
+  };
+
+  try {
+
+    const response = await fetch(MAKE_WEBHOOK, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error("HTTP " + response.status);
+    }
+
+    document.getElementById(
+      "formArea"
+    ).style.display = "none";
+
+    document.getElementById(
+      "successBox"
+    ).style.display = "block";
+
+  } catch (error) {
+
+    alert(
+      "ส่งข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง"
+    );
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = "ยืนยันและส่งข้อมูล";
+  }
+}
+
+</script>
+
+</body>
+</html>
