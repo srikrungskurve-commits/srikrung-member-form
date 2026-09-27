@@ -58,7 +58,6 @@
     }
 
     .header-icon {
-      font-size: 38px;
       margin-bottom: 8px;
     }
 
@@ -271,6 +270,20 @@
       cursor: not-allowed;
     }
 
+    /* กรณีพบข้อมูลซ้ำ:
+       เหลือปุ่มย้อนกลับเพียงปุ่มเดียว */
+    .button-group.duplicate-mode {
+      grid-template-columns: 1fr;
+    }
+
+    .button-group.duplicate-mode .secondary-button {
+      width: 100%;
+      padding: 15px;
+      font-size: 17px;
+      background: #f1f3f5;
+      color: #333;
+    }
+
     /* ---------- Success ---------- */
 
     .success-header {
@@ -341,6 +354,7 @@
       margin-top: 16px;
       text-align: center;
       line-height: 1.5;
+      font-weight: 600;
     }
 
     /* ---------- Screens ---------- */
@@ -369,8 +383,20 @@
         font-size: 22px;
       }
 
+      /* รักษาปุ่มหน้า Review ให้อยู่ซ้าย-ขวาเหมือนต้นแบบ */
       .button-group {
+        grid-template-columns: 1fr 1.25fr;
+      }
+
+      /* แต่กรณีข้อมูลซ้ำ ให้เหลือปุ่มเดียวเต็มแถว */
+      .button-group.duplicate-mode {
         grid-template-columns: 1fr;
+      }
+
+      .secondary-button,
+      .confirm-button {
+        font-size: 15px;
+        padding: 14px 8px;
       }
     }
   </style>
@@ -388,14 +414,17 @@
     <section id="inputScreen" class="screen active">
 
       <div class="system-header">
-      <div class="header-icon">
-  <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-    <circle cx="9" cy="7" r="4"/>
-    <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-  </svg>
-</div>
+        <div class="header-icon">
+          <svg width="42" height="42" viewBox="0 0 24 24"
+               fill="none" stroke="white" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+
         <h1>ระบบบันทึกข้อมูลสมาชิก</h1>
         <p>Srikrung S-Kurve<br>Admin Member Form</p>
       </div>
@@ -471,7 +500,6 @@
 
         <div class="detail-row">
           <div class="detail-icon">🪪</div>
-
           <div>
             <div class="detail-label">รหัสสมาชิก</div>
             <div id="reviewMemberId" class="detail-value"></div>
@@ -480,7 +508,6 @@
 
         <div class="detail-row">
           <div class="detail-icon">👤</div>
-
           <div>
             <div class="detail-label">ชื่อ-นามสกุล</div>
             <div id="reviewFullName" class="detail-value"></div>
@@ -489,7 +516,6 @@
 
         <div class="detail-row">
           <div class="detail-icon">☎️</div>
-
           <div>
             <div class="detail-label">เบอร์โทรศัพท์</div>
             <div id="reviewPhone" class="detail-value"></div>
@@ -498,7 +524,7 @@
 
       </div>
 
-      <div class="notice">
+      <div id="reviewNotice" class="notice">
         หากข้อมูลถูกต้อง<br>
         กด <strong>“ยืนยันและบันทึก”</strong><br>
         เพื่อเพิ่มข้อมูลสมาชิกเข้าสู่ระบบ
@@ -506,7 +532,7 @@
 
       <div id="errorBox" class="error-box"></div>
 
-      <div class="button-group">
+      <div id="reviewButtonGroup" class="button-group">
 
         <button
           id="backButton"
@@ -560,7 +586,6 @@
 
         <div class="detail-row">
           <div class="detail-icon">🪪</div>
-
           <div>
             <div class="detail-label">รหัสสมาชิก</div>
             <div id="successMemberId" class="detail-value"></div>
@@ -569,7 +594,6 @@
 
         <div class="detail-row">
           <div class="detail-icon">👤</div>
-
           <div>
             <div class="detail-label">ชื่อ-นามสกุล</div>
             <div id="successFullName" class="detail-value"></div>
@@ -578,7 +602,6 @@
 
         <div class="detail-row">
           <div class="detail-icon">☎️</div>
-
           <div>
             <div class="detail-label">เบอร์โทรศัพท์</div>
             <div id="successPhone" class="detail-value"></div>
@@ -635,6 +658,12 @@ const newMemberButton =
 const errorBox =
   document.getElementById("errorBox");
 
+const reviewNotice =
+  document.getElementById("reviewNotice");
+
+const reviewButtonGroup =
+  document.getElementById("reviewButtonGroup");
+
 
 let pendingData = null;
 
@@ -655,6 +684,28 @@ function showScreen(screen) {
     top: 0,
     behavior: "smooth"
   });
+
+}
+
+
+/* =========================
+   RESET REVIEW UI
+========================= */
+
+function resetReviewUI() {
+
+  errorBox.style.display = "none";
+  errorBox.textContent = "";
+
+  reviewNotice.style.display = "block";
+
+  confirmButton.style.display = "block";
+  confirmButton.disabled = false;
+  confirmButton.textContent = "✓ ยืนยันและบันทึก";
+
+  backButton.style.display = "block";
+
+  reviewButtonGroup.classList.remove("duplicate-mode");
 
 }
 
@@ -701,7 +752,9 @@ form.addEventListener("submit", function(event) {
     phone;
 
 
-  errorBox.style.display = "none";
+  /* ทุกครั้งที่เข้าหน้าตรวจสอบ
+     ให้กลับสู่หน้าปกติก่อน */
+  resetReviewUI();
 
   showScreen(reviewScreen);
 
@@ -713,6 +766,8 @@ form.addEventListener("submit", function(event) {
 ========================= */
 
 backButton.addEventListener("click", function() {
+
+  resetReviewUI();
 
   showScreen(inputScreen);
 
@@ -758,28 +813,53 @@ confirmButton.addEventListener("click", async function() {
       throw new Error("Webhook error");
     }
 
-    const result = (await response.text()).trim();
 
-if (result === "ALREADY_EXISTS") {
-  errorBox.textContent =
-    "รหัสสมาชิกนี้มีอยู่ในระบบแล้ว ระบบไม่ได้บันทึกข้อมูลซ้ำ";
-  errorBox.style.display = "block";
+    const result =
+      (await response.text()).trim();
 
-  // ซ่อนข้อความแนะนำสีเหลือง
-  const noticeBox = confirmScreen.querySelector(".notice");
-  if (noticeBox) {
-    noticeBox.style.display = "none";
-  }
 
-  // ซ่อนปุ่มยืนยันและบันทึก
-  confirmButton.style.display = "none";
+    /* =========================
+       MEMBER ALREADY EXISTS
+    ========================= */
 
-  // ให้ปุ่มย้อนกลับแก้ไขแสดงตามปกติ
-  backButton.style.display = "block";
+    if (result === "ALREADY_EXISTS") {
 
-  showScreen(confirmScreen);
-  return;
-}
+      errorBox.textContent =
+        "รหัสสมาชิกนี้มีอยู่ในระบบแล้ว ระบบไม่ได้บันทึกข้อมูลซ้ำ";
+
+      errorBox.style.display = "block";
+
+
+      /* 1. ซ่อนกล่องเหลือง */
+      reviewNotice.style.display = "none";
+
+
+      /* 2. ซ่อนปุ่มยืนยันและบันทึก */
+      confirmButton.style.display = "none";
+
+
+      /* 3. เหลือปุ่มย้อนกลับแก้ไข */
+      backButton.style.display = "block";
+
+
+      /* ทำปุ่มย้อนกลับเป็นปุ่มเดียวเต็มแถว */
+      reviewButtonGroup.classList.add("duplicate-mode");
+
+
+      /* อยู่หน้า REVIEW เดิม */
+      showScreen(reviewScreen);
+
+      return;
+    }
+
+
+    /* =========================
+       CREATED
+    ========================= */
+
+    if (result !== "CREATED") {
+      throw new Error("Unexpected webhook response: " + result);
+    }
 
 
     /* =========================
@@ -809,10 +889,16 @@ if (result === "ALREADY_EXISTS") {
   }
 
 
-  confirmButton.disabled = false;
+  /* ถ้ายังอยู่หน้า Review ปกติ
+     ให้ปุ่มกลับมาใช้งานได้ */
+  if (confirmButton.style.display !== "none") {
 
-  confirmButton.textContent =
-    "✓ ยืนยันและบันทึก";
+    confirmButton.disabled = false;
+
+    confirmButton.textContent =
+      "✓ ยืนยันและบันทึก";
+
+  }
 
 });
 
@@ -828,7 +914,7 @@ newMemberButton.addEventListener("click", function() {
 
   pendingData = null;
 
-  errorBox.style.display = "none";
+  resetReviewUI();
 
   showScreen(inputScreen);
 
