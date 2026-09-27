@@ -266,10 +266,238 @@
     </div>
 
     <div id="successBox">
-      <h2>ส่งข้อมูลเรียบร้อยแล้ว</h2>
-      <p>ระบบได้รับข้อมูลของคุณแล้ว</p>
-      <p>ขอบคุณครับ</p>
+
+  <div class="success-celebration">
+
+    <div class="success-sparkles">
+      ✦ ✨ ✦
     </div>
+
+    <div class="success-trophy">
+      🏆
+    </div>
+
+    <h2 style="
+      text-align:center;
+      color:#08a85a;
+      font-size:32px;
+      margin:16px 0 8px;
+    ">
+      บันทึกข้อมูลสำเร็จ
+    </h2>
+
+    <p style="
+      text-align:center;
+      font-size:18px;
+      color:#66756f;
+      margin-bottom:24px;
+    ">
+      ยินดีต้อนรับสู่ Srikrung S-Kurve
+    </p>
+
+
+    <!-- กล่องยืนยัน -->
+    <div style="
+      background:#effcf5;
+      border:1px solid #b9ecd0;
+      border-radius:18px;
+      padding:18px;
+      margin-bottom:25px;
+      text-align:center;
+    ">
+
+      <div style="
+        width:48px;
+        height:48px;
+        margin:0 auto 10px;
+        border-radius:50%;
+        background:#08a85a;
+        color:white;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:30px;
+        font-weight:bold;
+      ">
+        ✓
+      </div>
+
+      <strong style="
+        display:block;
+        color:#08a85a;
+        font-size:21px;
+      ">
+        บันทึกข้อมูลสำเร็จ
+      </strong>
+
+      <span style="
+        display:block;
+        margin-top:6px;
+        color:#65756f;
+        font-size:14px;
+      ">
+        ระบบได้รับและจัดเก็บข้อมูลของคุณเรียบร้อยแล้ว
+      </span>
+
+    </div>
+
+
+    <!-- 3 ไอคอน -->
+    <div style="
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin-bottom:25px;
+      text-align:center;
+    ">
+
+      <div
+        onclick="returnToLine()"
+        style="
+          background:#f7faf9;
+          border-radius:18px;
+          padding:15px 6px;
+          cursor:pointer;
+        "
+      >
+
+        <div style="
+          width:58px;
+          height:58px;
+          margin:0 auto 10px;
+          border-radius:50%;
+          background:#dcfaea;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:30px;
+        ">
+          👥
+        </div>
+
+        <strong style="display:block;">
+          ยินดีต้อนรับ
+        </strong>
+
+        <span style="
+          display:block;
+          margin-top:5px;
+          font-size:12px;
+          color:#76837f;
+        ">
+          สมาชิก<br>
+          Srikrung S-Kurve
+        </span>
+
+      </div>
+
+
+      <div
+        onclick="returnToLine()"
+        style="
+          background:#f7faf9;
+          border-radius:18px;
+          padding:15px 6px;
+          cursor:pointer;
+        "
+      >
+
+        <div style="
+          width:58px;
+          height:58px;
+          margin:0 auto 10px;
+          border-radius:50%;
+          background:#e5f0ff;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:30px;
+        ">
+          📋
+        </div>
+
+        <strong style="display:block;">
+          ข้อมูลสมาชิก
+        </strong>
+
+        <span style="
+          display:block;
+          margin-top:5px;
+          font-size:12px;
+          color:#76837f;
+        ">
+          บันทึกเข้าระบบ<br>
+          เรียบร้อยแล้ว
+        </span>
+
+      </div>
+
+
+      <div
+        onclick="returnToLine()"
+        style="
+          background:#f7faf9;
+          border-radius:18px;
+          padding:15px 6px;
+          cursor:pointer;
+        "
+      >
+
+        <div style="
+          width:58px;
+          height:58px;
+          margin:0 auto 10px;
+          border-radius:50%;
+          background:#eee6ff;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:30px;
+        ">
+          🛡️
+        </div>
+
+        <strong style="display:block;">
+          พร้อมเริ่มต้น
+        </strong>
+
+        <span style="
+          display:block;
+          margin-top:5px;
+          font-size:12px;
+          color:#76837f;
+        ">
+          กลับไปใช้งานต่อ<br>
+          ใน LINE
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- ปุ่มกลับ LINE -->
+    <button
+      type="button"
+      onclick="returnToLine()"
+      style="
+        width:100%;
+        border:none;
+        border-radius:18px;
+        padding:18px;
+        background:linear-gradient(90deg,#08b95f,#04994d);
+        color:white;
+        font-size:21px;
+        font-weight:bold;
+        cursor:pointer;
+      "
+    >
+      LINE　ขอบคุณครับ　›
+    </button>
+
+  </div>
+
+</div>
 
   </div>
 </div>
@@ -571,7 +799,9 @@ line_display_name: lineDisplayName,
     document.getElementById(
       "successBox"
     ).style.display = "block";
-
+    
+    launchSuccessConfetti();
+    
   } catch (error) {
 
     alert(
@@ -583,6 +813,59 @@ line_display_name: lineDisplayName,
   }
 }
 
+  // ===== Success Screen : กลับไป LINE =====
+function returnToLine() {
+  window.location.href = "https://line.me/";
+}
+
+// ===== Success Screen : Confetti Celebration =====
+function launchSuccessConfetti() {
+  const colors = ["#16a34a", "#22c55e", "#f5c451", "#f59e0b", "#ffffff"];
+  const amount = 80;
+
+  for (let i = 0; i < amount; i++) {
+    const confetti = document.createElement("span");
+
+    confetti.style.position = "fixed";
+    confetti.style.zIndex = "9999";
+    confetti.style.width = Math.random() * 8 + 5 + "px";
+    confetti.style.height = Math.random() * 12 + 6 + "px";
+    confetti.style.background =
+      colors[Math.floor(Math.random() * colors.length)];
+
+    confetti.style.left = Math.random() * 100 + "vw";
+    confetti.style.top = "-20px";
+    confetti.style.borderRadius = "2px";
+    confetti.style.pointerEvents = "none";
+
+    const duration = Math.random() * 2 + 2.5;
+    const rotate = Math.random() * 720;
+
+    confetti.animate(
+      [
+        {
+          transform: "translateY(0) rotate(0deg)",
+          opacity: 1
+        },
+        {
+          transform:
+            "translateY(110vh) rotate(" + rotate + "deg)",
+          opacity: 0.9
+        }
+      ],
+      {
+        duration: duration * 1000,
+        easing: "cubic-bezier(.25,.46,.45,.94)"
+      }
+    );
+
+    document.body.appendChild(confetti);
+
+    setTimeout(() => {
+      confetti.remove();
+    }, duration * 1000);
+  }
+}
 </script>
 
 </body>
