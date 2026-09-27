@@ -483,6 +483,12 @@ function prepareConfirmation() {
   ).scrollIntoView({
     behavior: "smooth"
   });
+
+  const confirmBtn = document.querySelector(".confirm-btn");
+confirmBtn.disabled = true;
+confirmBtn.style.background = "#d1d5db";
+confirmBtn.style.color = "#6b7280";
+confirmBtn.style.cursor = "default";
 }
 
 
