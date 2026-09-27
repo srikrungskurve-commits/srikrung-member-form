@@ -281,7 +281,14 @@ const MAKE_WEBHOOK =
   "https://hook.eu1.make.com/7dkl5tkjddqcy9ghicfepaiu9sg86v11";
 
 let verifiedReferrer = null;
+  
+const urlParams = new URLSearchParams(window.location.search);
 
+const lineUserId =
+  urlParams.get("line_user_id") || "";
+
+const lineDisplayName =
+  urlParams.get("line_display_name") || "";
 
 /* ------------------------------
    ตรวจสอบผู้แนะนำ
@@ -494,6 +501,9 @@ async function submitMember() {
   const payload = {
 
     action: "MEMBER_CUSTOMER_REGISTER",
+
+    line_user_id: lineUserId,
+line_display_name: lineDisplayName,
 
     member_id:
       document.getElementById("member_id")
