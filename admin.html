@@ -1,1 +1,182 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Srikrung Admin Member Form</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      background: #f5f7fb;
+      color: #222;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 28px;
+      border-radius: 16px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 24px;
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 28px;
+    }
+
+    label {
+      display: block;
+      margin-top: 18px;
+      margin-bottom: 7px;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ccc;
+      border-radius: 9px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 26px;
+      padding: 14px;
+      border: 0;
+      border-radius: 9px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #6c45d9;
+      color: white;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    #status {
+      margin-top: 18px;
+      text-align: center;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="card">
+
+    <h1>เพิ่มข้อมูลสมาชิก</h1>
+    <div class="subtitle">Srikrung S-Kurve — Admin Member Form</div>
+
+    <form id="adminMemberForm">
+
+      <label for="member_id">รหัสสมาชิก</label>
+      <input
+        id="member_id"
+        name="member_id"
+        type="text"
+        required
+        autocomplete="off"
+      >
+
+      <label for="full_name">ชื่อ-นามสกุล</label>
+      <input
+        id="full_name"
+        name="full_name"
+        type="text"
+        required
+        autocomplete="name"
+      >
+
+      <label for="phone">เบอร์โทรศัพท์</label>
+      <input
+        id="phone"
+        name="phone"
+        type="tel"
+        required
+        inputmode="tel"
+        autocomplete="tel"
+      >
+
+      <button id="submitButton" type="submit">
+        บันทึกข้อมูลสมาชิก
+      </button>
+
+      <div id="status"></div>
+
+    </form>
+  </div>
+</div>
+
+<script>
+const WEBHOOK_URL =
+  "https://hook.eu1.make.com/7dkl5tkjddqcy9ghicfepaiu9sg86v11";
+
+const form = document.getElementById("adminMemberForm");
+const button = document.getElementById("submitButton");
+const statusBox = document.getElementById("status");
+
+form.addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  button.disabled = true;
+  button.textContent = "กำลังบันทึก...";
+  statusBox.textContent = "";
+
+  const data = {
+    action: "ADMIN_MEMBER_FORM",
+    member_id: document.getElementById("member_id").value.trim(),
+    full_name: document.getElementById("full_name").value.trim(),
+    phone: document.getElementById("phone").value.trim()
+  };
+
+  try {
+    const response = await fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (!response.ok) {
+      throw new Error("Webhook error");
+    }
+
+    statusBox.textContent = "บันทึกข้อมูลเรียบร้อย";
+    form.reset();
+
+  } catch (error) {
+    statusBox.textContent = "ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่";
+  }
+
+  button.disabled = false;
+  button.textContent = "บันทึกข้อมูลสมาชิก";
+});
+</script>
+
+</body>
+</html>
