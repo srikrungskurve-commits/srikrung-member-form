@@ -758,6 +758,16 @@ confirmButton.addEventListener("click", async function() {
       throw new Error("Webhook error");
     }
 
+    const result = (await response.text()).trim();
+
+if (result === "ALREADY_EXISTS") {
+  errorBox.textContent =
+    "รหัสสมาชิกนี้มีอยู่ในระบบแล้ว ระบบไม่ได้บันทึกข้อมูลซ้ำ";
+  errorBox.style.display = "block";
+  showScreen(confirmScreen);
+  return;
+}
+
 
     /* =========================
        SUCCESS DATA
