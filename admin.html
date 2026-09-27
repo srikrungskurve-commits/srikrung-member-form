@@ -764,6 +764,19 @@ if (result === "ALREADY_EXISTS") {
   errorBox.textContent =
     "รหัสสมาชิกนี้มีอยู่ในระบบแล้ว ระบบไม่ได้บันทึกข้อมูลซ้ำ";
   errorBox.style.display = "block";
+
+  // ซ่อนข้อความแนะนำสีเหลือง
+  const noticeBox = confirmScreen.querySelector(".notice");
+  if (noticeBox) {
+    noticeBox.style.display = "none";
+  }
+
+  // ซ่อนปุ่มยืนยันและบันทึก
+  confirmButton.style.display = "none";
+
+  // ให้ปุ่มย้อนกลับแก้ไขแสดงตามปกติ
+  backButton.style.display = "block";
+
   showScreen(confirmScreen);
   return;
 }
