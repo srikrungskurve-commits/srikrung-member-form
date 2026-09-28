@@ -4,194 +4,1812 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Srikrung S-Kurve Member Form</title>
+
 <style>
-:root{--green:#08a85a;--green2:#057a48;--soft:#effaf5;--ink:#17211d;--muted:#708078;--line:#dce8e2;--gold:#f5c451}
-*{box-sizing:border-box} body{margin:0;background:#f4f7f5;color:var(--ink);font-family:Arial,"Noto Sans Thai",sans-serif}
-.shell{max-width:620px;margin:auto;min-height:100vh;background:#fff;box-shadow:0 0 28px rgba(0,0,0,.06)}
-.hero{padding:28px 22px 22px;background:linear-gradient(145deg,#087e50,#0ab263);color:#fff;text-align:center}
-.brand{font-size:26px;font-weight:800}.hero h1{margin:8px 0 4px;font-size:22px}.hero p{margin:0;opacity:.9;font-size:14px}
-.progress{display:grid;grid-template-columns:repeat(3,1fr);padding:20px 18px 10px;gap:4px}.step{text-align:center;color:#98a49e;font-size:12px}.dot{width:32px;height:32px;border-radius:50%;margin:0 auto 6px;display:grid;place-items:center;background:#edf1ef;font-weight:800}.step.active{color:var(--green);font-weight:700}.step.active .dot{background:var(--green);color:white}
-.content{padding:16px 20px 30px}.panel{border:1px solid var(--line);border-radius:20px;padding:20px;background:#fff;box-shadow:0 5px 18px rgba(20,80,50,.05)}
-.kicker{font-size:13px;color:var(--green);font-weight:800}.title{font-size:21px;font-weight:800;margin:4px 0 18px}.field{margin:14px 0}.field label{display:block;font-size:14px;font-weight:700;margin-bottom:7px}.req{color:#d33}
-input,select{width:100%;min-height:48px;border:1px solid #ccd9d2;border-radius:12px;padding:11px 13px;background:#fff;font-size:16px;color:#1c2923;outline:none}
-input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(8,168,90,.09)}
-.hint{font-size:12px;color:#849089;margin-top:6px}.buttons{display:flex;gap:10px;margin-top:22px}.btn{border:0;border-radius:13px;padding:14px 16px;font-size:16px;font-weight:800;cursor:pointer;width:100%}.primary{background:linear-gradient(90deg,#0ab763,#079b55);color:white}.secondary{background:#f0f4f2;color:#34433c}.btn:disabled{opacity:.55;cursor:not-allowed}
-.hidden{display:none!important}.notice{padding:13px;border-radius:12px;margin-top:12px;font-size:14px}.error{background:#fff1f1;color:#a02727;border:1px solid #f0c5c5}.ok{background:#effbf5;color:#087b47;border:1px solid #bce8d2}
-.summary-card{border:1px solid var(--line);border-radius:16px;padding:15px;margin:12px 0;background:#fbfdfc}.summary-card h3{margin:0 0 10px;font-size:16px}.row{display:flex;justify-content:space-between;gap:16px;padding:7px 0;border-bottom:1px dashed #e2eae6;font-size:14px}.row:last-child{border-bottom:0}.row span:first-child{color:#75837c}.row span:last-child{text-align:right;font-weight:700;word-break:break-word}
-.modal{position:fixed;inset:0;background:rgba(10,30,20,.56);z-index:5000;display:grid;place-items:center;padding:18px}.modal-card{background:white;width:min(100%,560px);max-height:88vh;overflow:auto;border-radius:20px;padding:20px}.modal-card h2{margin:0 0 8px;font-size:20px}.consent-text{font-size:14px;line-height:1.65;color:#425149}.consent-text ol{padding-left:22px}.checkline{display:flex;gap:10px;align-items:flex-start;background:#f5faf7;border-radius:12px;padding:12px;margin-top:15px}.checkline input{width:20px;min-height:20px;margin-top:1px}
-#successBox{text-align:center;padding:30px 20px 40px}.success-check{width:76px;height:76px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;margin:0 auto 16px;font-size:48px;font-weight:900}.success-title{font-size:28px;font-weight:900;color:var(--green)}.success-sub{color:#66756f;margin:7px 0 22px}.success-card{background:#effbf5;border:1px solid #bce8d2;border-radius:18px;padding:17px;text-align:left;margin:16px 0}.line-card{background:#f7faf9;border-radius:18px;padding:16px;margin:16px 0;color:#52615a}.line-btn{margin-top:10px}
-@media(max-width:390px){.content{padding:13px 13px 24px}.panel{padding:16px}.hero{padding:22px 14px 18px}.brand{font-size:23px}.buttons{gap:8px}.btn{padding:13px 10px;font-size:15px}.row{font-size:13px}}
+:root{
+  --green:#08a85a;
+  --green2:#057a48;
+  --soft:#effaf5;
+  --ink:#17211d;
+  --muted:#708078;
+  --line:#dce8e2;
+  --gold:#f5c451;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#f4f7f5;
+  color:var(--ink);
+  font-family:Arial,"Noto Sans Thai",sans-serif;
+}
+.shell{
+  max-width:620px;
+  margin:auto;
+  min-height:100vh;
+  background:#fff;
+  box-shadow:0 0 28px rgba(0,0,0,.06);
+}
+.hero{
+  padding:28px 22px 22px;
+  background:linear-gradient(145deg,#087e50,#0ab263);
+  color:#fff;
+  text-align:center;
+}
+.brand{font-size:26px;font-weight:800}
+.hero h1{margin:8px 0 4px;font-size:22px}
+.hero p{margin:0;opacity:.9;font-size:14px}
+
+.progress{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  padding:20px 18px 10px;
+  gap:4px;
+}
+.step{
+  text-align:center;
+  color:#98a49e;
+  font-size:12px;
+}
+.dot{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  margin:0 auto 6px;
+  display:grid;
+  place-items:center;
+  background:#edf1ef;
+  font-weight:800;
+}
+.step.active{color:var(--green);font-weight:700}
+.step.active .dot{background:var(--green);color:white}
+
+.content{padding:16px 20px 30px}
+.panel{
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:20px;
+  background:#fff;
+  box-shadow:0 5px 18px rgba(20,80,50,.05);
+}
+.kicker{
+  font-size:13px;
+  color:var(--green);
+  font-weight:800;
+}
+.title{
+  font-size:21px;
+  font-weight:800;
+  margin:4px 0 18px;
+}
+.field{margin:14px 0}
+.field label{
+  display:block;
+  font-size:14px;
+  font-weight:700;
+  margin-bottom:7px;
+}
+.req{color:#d33}
+input,select{
+  width:100%;
+  min-height:48px;
+  border:1px solid #ccd9d2;
+  border-radius:12px;
+  padding:11px 13px;
+  background:#fff;
+  font-size:16px;
+  color:#1c2923;
+  outline:none;
+}
+input:focus,select:focus{
+  border-color:var(--green);
+  box-shadow:0 0 0 3px rgba(8,168,90,.09);
+}
+.hint{
+  font-size:12px;
+  color:#849089;
+  margin-top:6px;
+}
+.buttons{
+  display:flex;
+  gap:10px;
+  margin-top:22px;
+}
+.btn{
+  border:0;
+  border-radius:13px;
+  padding:14px 16px;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+  width:100%;
+}
+.primary{
+  background:linear-gradient(90deg,#0ab763,#079b55);
+  color:white;
+}
+.secondary{
+  background:#f0f4f2;
+  color:#34433c;
+}
+.outline{
+  background:#fff;
+  color:var(--green2);
+  border:2px solid var(--green);
+}
+.btn:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+.hidden{display:none!important}
+
+.eligibility{
+  margin-top:16px;
+  padding:16px;
+  border-radius:15px;
+  background:#effbf5;
+  border:1px solid #bce8d2;
+}
+.eligibility h3{
+  margin:0 0 8px;
+  color:#087b47;
+}
+
+/* หน้า 2 ให้ความรู้สึกว่าเข้าสู่หน้าถัดไปแล้ว */
+.page2-head{
+  margin:-20px -20px 18px;
+  padding:22px 20px;
+  border-radius:20px 20px 0 0;
+  background:linear-gradient(135deg,#e8f8f0,#ffffff);
+  border-top:6px solid var(--green);
+  border-bottom:1px solid #d7eee2;
+}
+.page2-head .title{
+  margin:3px 0 0;
+  color:#087b47;
+  font-size:23px;
+}
+
+.notice{
+  padding:13px;
+  border-radius:12px;
+  margin-top:12px;
+  font-size:14px;
+}
+.error{
+  background:#fff1f1;
+  color:#a02727;
+  border:1px solid #f0c5c5;
+}
+
+.summary-card{
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:15px;
+  margin:12px 0;
+  background:#fbfdfc;
+}
+.summary-card h3{
+  margin:0 0 10px;
+  font-size:16px;
+}
+.referrer-card{
+  background:#effbf5;
+  border-color:#bce8d2;
+}
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  padding:7px 0;
+  border-bottom:1px dashed #e2eae6;
+  font-size:14px;
+}
+.row:last-child{border-bottom:0}
+.row span:first-child{color:#75837c}
+.row span:last-child{
+  text-align:right;
+  font-weight:700;
+  word-break:break-word;
+}
+
+/* Consent */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(10,30,20,.56);
+  z-index:5000;
+  display:grid;
+  place-items:center;
+  padding:18px;
+}
+.modal-card{
+  background:white;
+  width:min(100%,560px);
+  max-height:88vh;
+  overflow:auto;
+  border-radius:20px;
+  padding:20px;
+}
+.modal-card h2{
+  margin:0 0 8px;
+  font-size:20px;
+}
+.consent-text{
+  font-size:14px;
+  line-height:1.65;
+  color:#425149;
+}
+.consent-text ol{padding-left:22px}
+.checkline{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  background:#f5faf7;
+  border-radius:12px;
+  padding:12px;
+  margin-top:15px;
+}
+.checkline input{
+  width:20px;
+  min-height:20px;
+  margin-top:1px;
+}
+
+/* Success */
+#successBox{
+  text-align:center;
+  padding:30px 20px 40px;
+}
+.success-check{
+  width:76px;
+  height:76px;
+  border-radius:50%;
+  background:var(--green);
+  color:#fff;
+  display:grid;
+  place-items:center;
+  margin:0 auto 16px;
+  font-size:48px;
+  font-weight:900;
+}
+.success-title{
+  font-size:28px;
+  font-weight:900;
+  color:var(--green);
+}
+.success-sub{
+  color:#66756f;
+  margin:7px 0 22px;
+}
+.success-card{
+  background:#effbf5;
+  border:1px solid #bce8d2;
+  border-radius:18px;
+  padding:17px;
+  text-align:left;
+  margin:16px 0;
+}
+.line-card{
+  background:#f7faf9;
+  border-radius:18px;
+  padding:16px;
+  margin:16px 0;
+  color:#52615a;
+}
+.line-btn{margin-top:10px}
+
+@media(max-width:390px){
+  .content{padding:13px 13px 24px}
+  .panel{padding:16px}
+  .hero{padding:22px 14px 18px}
+  .brand{font-size:23px}
+  .buttons{gap:8px}
+  .btn{padding:13px 10px;font-size:15px}
+  .row{font-size:13px}
+  .page2-head{margin:-16px -16px 18px}
+}
 </style>
 </head>
+
 <body>
+
 <div class="shell">
-  <div id="formArea">
-    <header class="hero">
-      <div class="brand">SRIKRUNG S-Kurve</div>
-      <h1>สมัครสมาชิก</h1>
-      <p>เริ่มต้นเส้นทางสู่ความสำเร็จไปด้วยกัน</p>
-    </header>
 
-    <div class="progress">
-      <div id="p1" class="step active"><div class="dot">1</div>กรอกข้อมูล</div>
-      <div id="p2" class="step"><div class="dot">2</div>ตรวจสอบข้อมูล</div>
-      <div id="p3" class="step"><div class="dot">3</div>เสร็จสิ้น</div>
-    </div>
+<div id="formArea">
 
-    <main class="content">
-      <section id="page1" class="panel">
-        <div class="kicker">ขั้นตอนที่ 1</div>
-        <div class="title">ข้อมูลของคุณ</div>
-        <div class="field"><label>รหัสสมาชิก <span class="req">*</span></label><input id="member_id" autocomplete="off" placeholder="กรอกรหัสสมาชิกศรีกรุง"></div>
-        <div class="field"><label>ชื่อ-นามสกุล <span class="req">*</span></label><input id="full_name" autocomplete="name" placeholder="กรอกชื่อ-นามสกุล"></div>
-        <div class="field"><label>เบอร์โทรศัพท์ <span class="req">*</span></label><input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="เช่น 0812345678"></div>
-        <div class="field"><label>อีเมล <span class="hint">(ไม่บังคับ)</span></label><input id="email" type="email" inputmode="email" autocomplete="email" placeholder="example@email.com"></div>
-        <div id="page1Error" class="notice error hidden"></div>
-        <div class="buttons"><button class="btn primary" type="button" onclick="goPage2()">ถัดไป →</button></div>
-      </section>
+<header class="hero">
+  <div class="brand">SRIKRUNG S-Kurve</div>
+  <h1>สมัครสมาชิก</h1>
+  <p>เริ่มต้นเส้นทางสู่ความสำเร็จไปด้วยกัน</p>
+</header>
 
-      <section id="page2" class="panel hidden">
-        <div class="kicker">ข้อมูลเพิ่มเติม</div>
-        <div class="title">ข้อมูลสมาชิกและผู้แนะนำ</div>
-        <div class="field"><label>ชื่อเล่น</label><input id="nickname" placeholder="ชื่อเล่น"></div>
-        <div class="field"><label>LINE ID <span class="hint">(ไม่บังคับ)</span></label><input id="line_id" autocomplete="off" placeholder="กรอก LINE ID"></div>
-        <div class="field"><label>จังหวัด</label><select id="province"><option value="">-- เลือกจังหวัด --</option></select></div>
-        <div class="field"><label>รายได้ที่คาดหวัง</label><select id="expected_income">
-          <option value="">-- เลือกรายได้ที่คาดหวัง --</option>
-          <option>ไม่เกิน 10,000 บาท</option><option>10,001 – 20,000 บาท</option><option>20,001 – 30,000 บาท</option>
-          <option>30,001 – 50,000 บาท</option><option>50,001 – 100,000 บาท</option><option>มากกว่า 100,000 บาท</option>
-        </select></div>
-        <div class="field"><label>ความสนใจ</label><select id="interest_type">
-          <option value="">-- เลือกความสนใจ --</option>
-          <option value="เพื่อซื้อประกัน">เพื่อซื้อประกัน</option>
-          <option value="ต้องการราคาทุน">ต้องการราคาทุน</option>
-          <option value="ต้องการรายได้เพิ่ม">ต้องการรายได้เพิ่ม</option>
-          <option value="ต้องการทำธุรกิจส่วนตัว">ต้องการทำธุรกิจส่วนตัว</option>
-          <option value="เพื่อซื้อราคาทุนและต้องการรายได้เพิ่ม">เพื่อซื้อราคาทุนและต้องการรายได้เพิ่ม</option>
-          <option value="ต้องการรับเว็บไซต์ ฟรี!">ต้องการรับเว็บไซต์ ฟรี!</option>
-          <option value="อื่นๆ">อื่นๆ</option>
-        </select></div>
-        <div class="field"><label>รหัสสมาชิกผู้แนะนำ <span class="req">*</span></label><input id="referrer_member_id" autocomplete="off" placeholder="กรอกรหัสสมาชิกผู้แนะนำ"><div class="hint">ระบบจะตรวจสอบผู้แนะนำพร้อมกับการตรวจสอบข้อมูล</div></div>
-        <div id="referrerError" class="notice error hidden"></div>
-        <div class="buttons"><button class="btn secondary" type="button" onclick="goPage1()">← ย้อนกลับ</button><button id="reviewBtn" class="btn primary" type="button" onclick="reviewData()">ตรวจสอบข้อมูล →</button></div>
-      </section>
-
-      <section id="preview" class="panel hidden">
-        <div class="kicker">ขั้นตอนที่ 2</div><div class="title">ตรวจสอบข้อมูลก่อนยืนยัน</div>
-        <div class="summary-card"><h3>👤 ข้อมูลสมาชิก</h3>
-          <div class="row"><span>รหัสสมาชิก</span><span id="s_member_id"></span></div><div class="row"><span>ชื่อ-นามสกุล</span><span id="s_full_name"></span></div>
-          <div class="row"><span>เบอร์โทร</span><span id="s_phone"></span></div><div class="row"><span>อีเมล</span><span id="s_email"></span></div>
-          <div class="row"><span>LINE ID</span><span id="s_line_id"></span></div>
-          <div class="row"><span>จังหวัด</span><span id="s_province"></span></div><div class="row"><span>รายได้ที่คาดหวัง</span><span id="s_income"></span></div>
-          <div class="row"><span>ความสนใจ</span><span id="s_interest"></span></div>
-        </div>
-        <div class="summary-card"><h3>✓ ผู้แนะนำที่ตรวจสอบแล้ว</h3><div class="row"><span>รหัสสมาชิก</span><span id="s_referrer_id"></span></div><div class="row"><span>ชื่อผู้แนะนำ</span><span id="s_referrer_name"></span></div></div>
-        <div class="summary-card"><h3>🛡️ ข้อตกลงข้อมูลสมาชิก</h3><div class="ok notice">ยอมรับข้อตกลงแล้ว ✓</div></div>
-        <div class="buttons"><button class="btn secondary" type="button" onclick="editData()">← ย้อนกลับ / แก้ไข</button><button id="submitBtn" class="btn primary" type="button" onclick="submitMember()">ยืนยันสมัครสมาชิก</button></div>
-      </section>
-    </main>
+<div class="progress">
+  <div id="p1" class="step active">
+    <div class="dot">1</div>
+    กรอกข้อมูล
   </div>
-
-  <section id="successBox" class="hidden">
-    <div class="success-check">✓</div><div class="success-title">สมัครสมาชิกสำเร็จ</div><div class="success-sub">ยินดีต้อนรับสู่ Srikrung S-Kurve</div>
-    <div class="success-card">
-      <div class="row"><span>รหัสสมาชิก</span><span id="success_member_id"></span></div>
-      <div class="row"><span>ชื่อ-นามสกุล</span><span id="success_full_name"></span></div>
-      <div class="row"><span>เบอร์โทร</span><span id="success_phone"></span></div>
-      <div class="row"><span>อีเมล</span><span id="success_email"></span></div>
-      <div class="row"><span>วันที่</span><span id="success_date"></span></div>
-      <div class="row"><span>สถานะ</span><span>บันทึกข้อมูลสำเร็จ</span></div>
-    </div>
-    <div class="line-card">ข้อมูลของคุณได้รับการส่งเข้าระบบเรียบร้อยแล้ว<br>สามารถกลับไปใช้งานต่อใน LINE ได้</div>
-    <button class="btn primary line-btn" type="button" onclick="returnToLine()">LINE　ขอบคุณครับ　›</button>
-  </section>
+  <div id="p2" class="step">
+    <div class="dot">2</div>
+    ตรวจสอบข้อมูล
+  </div>
+  <div id="p3" class="step">
+    <div class="dot">3</div>
+    เสร็จสิ้น
+  </div>
 </div>
 
-<div id="consentModal" class="modal hidden">
- <div class="modal-card">
-  <h2>🛡️ ข้อตกลงการคุ้มครองข้อมูลสมาชิก</h2>
-  <div class="consent-text">
-   <p>เพื่อความปลอดภัยและความเป็นส่วนตัวของสมาชิก เมื่อการสมัครได้รับการยืนยันและมีสถานะ ACTIVE ท่านรับทราบและยินยอมให้ระบบ Srikrung S-Kurve ใช้ข้อมูลตามวัตถุประสงค์ดังต่อไปนี้</p>
-   <ol>
-    <li><b>ข้อมูลที่ใช้สำหรับค้นหาและเชื่อมโยงสมาชิก</b><br>ใช้เฉพาะ ชื่อ-นามสกุล (หรือชื่อที่ใช้แสดงในระบบ) และรหัสสมาชิก เพื่อการค้นหา ยืนยันตัวตน และเชื่อมโยงสมาชิกกับผู้แนะนำภายในระบบ</li>
-    <li><b>ข้อมูลติดต่อส่วนบุคคล</b><br>ข้อมูล เช่น เบอร์โทรศัพท์และอีเมล จะไม่แสดงในระบบค้นหาผู้แนะนำ และไม่เปิดเผยต่อสาธารณะ</li>
-    <li><b>การใช้ข้อมูลส่วนบุคคล</b><br>ข้อมูลส่วนบุคคลจะใช้เท่าที่จำเป็นสำหรับการดำเนินงาน การดูแลสมาชิก และบริการหรือสิทธิประโยชน์ที่เกี่ยวข้องกับระบบ</li>
-    <li><b>การคุ้มครองความเป็นส่วนตัว</b><br>ระบบจะจำกัดการเข้าถึงและการใช้ข้อมูลตามความจำเป็น เพื่อช่วยลดความเสี่ยงจากการเข้าถึงหรือการนำข้อมูลไปใช้โดยไม่ได้รับอนุญาต</li>
-   </ol>
+<main class="content">
+
+<!-- =========================
+     หน้า 1 : ด่านตรวจสิทธิ์
+========================= -->
+<section id="page1" class="panel">
+
+  <div class="kicker">ขั้นตอนที่ 1</div>
+  <div class="title">ข้อมูลของคุณ</div>
+
+  <div class="field">
+    <label>รหัสสมาชิก <span class="req">*</span></label>
+    <input id="member_id"
+           autocomplete="off"
+           placeholder="กรอกรหัสสมาชิกศรีกรุง">
   </div>
-  <label class="checkline"><input id="consentCheck" type="checkbox"><span>ข้าพเจ้าได้อ่าน ทำความเข้าใจ และยอมรับข้อตกลงการใช้และคุ้มครองข้อมูลสมาชิกข้างต้น</span></label>
-  <div class="buttons"><button class="btn secondary" type="button" onclick="closeConsent()">ยกเลิก</button><button id="consentBtn" class="btn primary" type="button" onclick="acceptConsent()">ยอมรับและดำเนินการต่อ</button></div>
- </div>
+
+  <div class="field">
+    <label>ชื่อ-นามสกุล <span class="req">*</span></label>
+    <input id="full_name"
+           autocomplete="name"
+           placeholder="กรอกชื่อ-นามสกุล">
+  </div>
+
+  <div class="field">
+    <label>เบอร์โทรศัพท์ <span class="req">*</span></label>
+    <input id="phone"
+           type="tel"
+           inputmode="tel"
+           autocomplete="tel"
+           placeholder="เช่น 0812345678">
+  </div>
+
+  <div class="field">
+    <label>รหัสสมาชิกผู้แนะนำ <span class="req">*</span></label>
+    <input id="referrer_member_id"
+           autocomplete="off"
+           placeholder="กรอกรหัสสมาชิกผู้แนะนำ">
+    <div class="hint">
+      ระบบจะตรวจสอบข้อมูลผู้สมัครก่อน แล้วจึงตรวจสอบผู้แนะนำ
+    </div>
+  </div>
+
+  <div id="page1Error"
+       class="notice error hidden"></div>
+
+  <div class="buttons">
+    <button id="eligibilityBtn"
+            class="btn outline"
+            type="button"
+            onclick="checkEligibility()">
+      ตรวจสอบสิทธิ์การสมัคร
+    </button>
+  </div>
+
+  <div id="eligibilityBox"
+       class="eligibility hidden">
+
+    <h3>✅ คุณมีสิทธิ์สมัครสมาชิก</h3>
+
+    <div id="eligibilityText"></div>
+
+    <div class="buttons">
+      <button class="btn primary"
+              type="button"
+              onclick="goPage2()">
+        ถัดไป — กรอกข้อมูลเพิ่มเติม →
+      </button>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     หน้า 2 : ข้อมูลเพิ่มเติม
+========================= -->
+<section id="page2"
+         class="panel hidden">
+
+  <div class="page2-head">
+    <div class="kicker">ขั้นตอนถัดไป</div>
+    <div class="title">ข้อมูลเพิ่มเติม</div>
+  </div>
+
+  <div class="field">
+    <label>ชื่อเล่น</label>
+    <input id="nickname"
+           placeholder="ชื่อเล่น">
+  </div>
+
+  <div class="field">
+    <label>
+      LINE ID
+      <span class="hint">(ไม่บังคับ)</span>
+    </label>
+    <input id="line_id"
+           autocomplete="off"
+           placeholder="กรอก LINE ID">
+  </div>
+
+  <div class="field">
+    <label>
+      อีเมล
+      <span class="hint">(ไม่บังคับ)</span>
+    </label>
+    <input id="email"
+           type="email"
+           inputmode="email"
+           autocomplete="email"
+           placeholder="example@email.com">
+  </div>
+
+  <div class="field">
+    <label>จังหวัด</label>
+    <select id="province">
+      <option value="">-- เลือกจังหวัด --</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>รายได้ที่คาดหวัง</label>
+
+    <select id="expected_income">
+      <option value="">-- เลือกรายได้ที่คาดหวัง --</option>
+      <option>ไม่เกิน 10,000 บาท</option>
+      <option>10,001 – 20,000 บาท</option>
+      <option>20,001 – 30,000 บาท</option>
+      <option>30,001 – 50,000 บาท</option>
+      <option>50,001 – 100,000 บาท</option>
+      <option>มากกว่า 100,000 บาท</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>ความสนใจ</label>
+
+    <select id="interest_type">
+      <option value="">-- เลือกความสนใจ --</option>
+      <option value="เพื่อซื้อประกัน">
+        เพื่อซื้อประกัน
+      </option>
+      <option value="ต้องการราคาทุน">
+        ต้องการราคาทุน
+      </option>
+      <option value="ต้องการรายได้เพิ่ม">
+        ต้องการรายได้เพิ่ม
+      </option>
+      <option value="ต้องการทำธุรกิจส่วนตัว">
+        ต้องการทำธุรกิจส่วนตัว
+      </option>
+      <option value="เพื่อซื้อราคาทุนและต้องการรายได้เพิ่ม">
+        เพื่อซื้อราคาทุนและต้องการรายได้เพิ่ม
+      </option>
+      <option value="ต้องการรับเว็บไซต์ ฟรี!">
+        ต้องการรับเว็บไซต์ ฟรี!
+      </option>
+      <option value="อื่นๆ">
+        อื่นๆ
+      </option>
+    </select>
+  </div>
+
+  <div id="page2Error"
+       class="notice error hidden"></div>
+
+  <!-- ไม่มีปุ่มย้อนกลับในหน้ากรอกข้อมูล -->
+  <div class="buttons">
+    <button id="reviewBtn"
+            class="btn primary"
+            type="button"
+            onclick="reviewData()">
+      ตรวจสอบข้อมูล →
+    </button>
+  </div>
+
+</section>
+
+
+<!-- =========================
+     Preview
+========================= -->
+<section id="preview"
+         class="panel hidden">
+
+  <div class="kicker">ขั้นตอนที่ 2</div>
+  <div class="title">ตรวจสอบข้อมูลก่อนยืนยัน</div>
+
+  <div class="summary-card">
+
+    <h3>👤 ข้อมูลส่วนตัว</h3>
+
+    <div class="row">
+      <span>รหัสสมาชิก</span>
+      <span id="s_member_id"></span>
+    </div>
+
+    <div class="row">
+      <span>ชื่อ-นามสกุล</span>
+      <span id="s_full_name"></span>
+    </div>
+
+    <div class="row">
+      <span>เบอร์โทร</span>
+      <span id="s_phone"></span>
+    </div>
+
+    <div class="row">
+      <span>อีเมล</span>
+      <span id="s_email"></span>
+    </div>
+
+    <div class="row">
+      <span>ชื่อเล่น</span>
+      <span id="s_nickname"></span>
+    </div>
+
+    <div class="row">
+      <span>LINE ID</span>
+      <span id="s_line_id"></span>
+    </div>
+
+    <div class="row">
+      <span>จังหวัด</span>
+      <span id="s_province"></span>
+    </div>
+
+    <div class="row">
+      <span>รายได้ที่คาดหวัง</span>
+      <span id="s_income"></span>
+    </div>
+
+    <div class="row">
+      <span>ความสนใจ</span>
+      <span id="s_interest"></span>
+    </div>
+
+  </div>
+
+
+  <div class="summary-card referrer-card">
+
+    <h3>✓ ข้อมูลผู้แนะนำ</h3>
+
+    <div class="row">
+      <span>รหัสสมาชิก</span>
+      <span id="s_referrer_id"></span>
+    </div>
+
+    <div class="row">
+      <span>ชื่อผู้แนะนำ</span>
+      <span id="s_referrer_name"></span>
+    </div>
+
+  </div>
+
+
+  <div class="buttons">
+
+    <button class="btn secondary"
+            type="button"
+            onclick="editData()">
+      ← ย้อนกลับ
+    </button>
+
+    <button id="submitBtn"
+            class="btn primary"
+            type="button"
+            onclick="openConsent()">
+      ตกลงสมัคร →
+    </button>
+
+  </div>
+
+</section>
+
+</main>
 </div>
+
+
+<!-- =========================
+     SUCCESS
+========================= -->
+<section id="successBox"
+         class="hidden">
+
+  <div class="success-check">✓</div>
+
+  <div class="success-title">
+    สมัครสมาชิกสำเร็จ
+  </div>
+
+  <div class="success-sub">
+    ยินดีต้อนรับสู่ Srikrung S-Kurve
+  </div>
+
+  <div class="success-card">
+
+    <div class="row">
+      <span>รหัสสมาชิก</span>
+      <span id="success_member_id"></span>
+    </div>
+
+    <div class="row">
+      <span>ชื่อ-นามสกุล</span>
+      <span id="success_full_name"></span>
+    </div>
+
+    <div class="row">
+      <span>เบอร์โทร</span>
+      <span id="success_phone"></span>
+    </div>
+
+    <div class="row">
+      <span>อีเมล</span>
+      <span id="success_email"></span>
+    </div>
+
+    <div class="row">
+      <span>วันที่</span>
+      <span id="success_date"></span>
+    </div>
+
+    <div class="row">
+      <span>สถานะ</span>
+      <span>บันทึกข้อมูลสำเร็จ</span>
+    </div>
+
+  </div>
+
+  <div class="line-card">
+    ข้อมูลของคุณได้รับการส่งเข้าระบบเรียบร้อยแล้ว
+    <br>
+    สามารถกลับไปใช้งานต่อใน LINE ได้
+  </div>
+
+  <button class="btn primary line-btn"
+          type="button"
+          onclick="returnToLine()">
+    LINE　ขอบคุณครับ　›
+  </button>
+
+</section>
+
+</div>
+
+
+<!-- =========================
+     CONSENT
+========================= -->
+<div id="consentModal"
+     class="modal hidden">
+
+<div class="modal-card">
+
+<h2>
+🛡️ ข้อตกลงการคุ้มครองข้อมูลสมาชิก
+</h2>
+
+<div class="consent-text">
+
+<p>
+เพื่อความปลอดภัยและความเป็นส่วนตัวของสมาชิก
+เมื่อการสมัครได้รับการยืนยันและมีสถานะ ACTIVE
+ท่านรับทราบและยินยอมให้ระบบ Srikrung S-Kurve
+ใช้ข้อมูลตามวัตถุประสงค์ดังต่อไปนี้
+</p>
+
+<ol>
+
+<li>
+<b>ข้อมูลที่ใช้สำหรับค้นหาและเชื่อมโยงสมาชิก</b>
+<br>
+ใช้เฉพาะ ชื่อ-นามสกุล
+(หรือชื่อที่ใช้แสดงในระบบ)
+และรหัสสมาชิก
+เพื่อการค้นหา ยืนยันตัวตน
+และเชื่อมโยงสมาชิกกับผู้แนะนำภายในระบบ
+</li>
+
+<li>
+<b>ข้อมูลติดต่อส่วนบุคคล</b>
+<br>
+ข้อมูล เช่น เบอร์โทรศัพท์และอีเมล
+จะไม่แสดงในระบบค้นหาผู้แนะนำ
+และไม่เปิดเผยต่อสาธารณะ
+</li>
+
+<li>
+<b>การใช้ข้อมูลส่วนบุคคล</b>
+<br>
+ข้อมูลส่วนบุคคลจะใช้เท่าที่จำเป็น
+สำหรับการดำเนินงาน การดูแลสมาชิก
+และบริการหรือสิทธิประโยชน์ที่เกี่ยวข้องกับระบบ
+</li>
+
+<li>
+<b>การคุ้มครองความเป็นส่วนตัว</b>
+<br>
+ระบบจะจำกัดการเข้าถึงและการใช้ข้อมูลตามความจำเป็น
+เพื่อช่วยลดความเสี่ยงจากการเข้าถึง
+หรือการนำข้อมูลไปใช้โดยไม่ได้รับอนุญาต
+</li>
+
+</ol>
+
+</div>
+
+<label class="checkline">
+
+<input id="consentCheck"
+       type="checkbox">
+
+<span>
+ข้าพเจ้าได้อ่าน ทำความเข้าใจ
+และยอมรับข้อตกลงการใช้และคุ้มครองข้อมูลสมาชิกข้างต้น
+</span>
+
+</label>
+
+
+<div class="buttons">
+
+<button class="btn secondary"
+        type="button"
+        onclick="closeConsent()">
+ยกเลิก
+</button>
+
+<button id="consentBtn"
+        class="btn primary"
+        type="button"
+        onclick="acceptConsentAndSubmit()">
+ยอมรับและยืนยันการสมัคร
+</button>
+
+</div>
+
+</div>
+</div>
+
 
 <script>
-const MAKE_WEBHOOK="https://hook.eu1.make.com/7dkl5tkjddqcy9ghicfepaiu9sg86v11";
-let verifiedReferrer=null, consentAccepted=false;
-const urlParams=new URLSearchParams(window.location.search);
-const lineUserId=urlParams.get("line_user_id")||"";
-const lineDisplayName=urlParams.get("line_display_name")||"";
 
-const provinces=["กรุงเทพมหานคร","กระบี่","กาญจนบุรี","กาฬสินธุ์","กำแพงเพชร","ขอนแก่น","จันทบุรี","ฉะเชิงเทรา","ชลบุรี","ชัยนาท","ชัยภูมิ","ชุมพร","เชียงราย","เชียงใหม่","ตรัง","ตราด","ตาก","นครนายก","นครปฐม","นครพนม","นครราชสีมา","นครศรีธรรมราช","นครสวรรค์","นนทบุรี","นราธิวาส","น่าน","บึงกาฬ","บุรีรัมย์","ปทุมธานี","ประจวบคีรีขันธ์","ปราจีนบุรี","ปัตตานี","พระนครศรีอยุธยา","พะเยา","พังงา","พัทลุง","พิจิตร","พิษณุโลก","เพชรบุรี","เพชรบูรณ์","แพร่","ภูเก็ต","มหาสารคาม","มุกดาหาร","แม่ฮ่องสอน","ยโสธร","ยะลา","ร้อยเอ็ด","ระนอง","ระยอง","ราชบุรี","ลพบุรี","ลำปาง","ลำพูน","เลย","ศรีสะเกษ","สกลนคร","สงขลา","สตูล","สมุทรปราการ","สมุทรสงคราม","สมุทรสาคร","สระแก้ว","สระบุรี","สิงห์บุรี","สุโขทัย","สุพรรณบุรี","สุราษฎร์ธานี","สุรินทร์","หนองคาย","หนองบัวลำภู","อ่างทอง","อำนาจเจริญ","อุดรธานี","อุตรดิตถ์","อุทัยธานี","อุบลราชธานี"];
-const provinceSelect=document.getElementById("province");
-provinces.forEach(p=>{const o=document.createElement("option");o.value=p;o.textContent=p;provinceSelect.appendChild(o)});
-document.getElementById("line_user_display").value=lineUserId||"ระบบรับจาก LINE";
+/* ==========================================================
+   CONFIG
+========================================================== */
 
-function show(id){document.getElementById(id).classList.remove("hidden")}
-function hide(id){document.getElementById(id).classList.add("hidden")}
-function setProgress(n){[1,2,3].forEach(i=>document.getElementById("p"+i)?.classList.toggle("active",i<=n))}
-function topPage(){window.scrollTo({top:0,behavior:"smooth"})}
-function goPage1(){hide("page2");show("page1");topPage()}
+const MAKE_WEBHOOK =
+"https://hook.eu1.make.com/7dkl5tkjddqcy9ghicfepaiu9sg86v11";
+
+
+/* ==========================================================
+   STATE
+========================================================== */
+
+let verifiedApplicant = false;
+let verifiedReferrer = null;
+let consentAccepted = false;
+
+const urlParams =
+new URLSearchParams(window.location.search);
+
+const lineUserId =
+urlParams.get("line_user_id") || "";
+
+const lineDisplayName =
+urlParams.get("line_display_name") || "";
+
+
+/* ==========================================================
+   จังหวัด
+========================================================== */
+
+const provinces = [
+"กรุงเทพมหานคร",
+"กระบี่",
+"กาญจนบุรี",
+"กาฬสินธุ์",
+"กำแพงเพชร",
+"ขอนแก่น",
+"จันทบุรี",
+"ฉะเชิงเทรา",
+"ชลบุรี",
+"ชัยนาท",
+"ชัยภูมิ",
+"ชุมพร",
+"เชียงราย",
+"เชียงใหม่",
+"ตรัง",
+"ตราด",
+"ตาก",
+"นครนายก",
+"นครปฐม",
+"นครพนม",
+"นครราชสีมา",
+"นครศรีธรรมราช",
+"นครสวรรค์",
+"นนทบุรี",
+"นราธิวาส",
+"น่าน",
+"บึงกาฬ",
+"บุรีรัมย์",
+"ปทุมธานี",
+"ประจวบคีรีขันธ์",
+"ปราจีนบุรี",
+"ปัตตานี",
+"พระนครศรีอยุธยา",
+"พะเยา",
+"พังงา",
+"พัทลุง",
+"พิจิตร",
+"พิษณุโลก",
+"เพชรบุรี",
+"เพชรบูรณ์",
+"แพร่",
+"ภูเก็ต",
+"มหาสารคาม",
+"มุกดาหาร",
+"แม่ฮ่องสอน",
+"ยโสธร",
+"ยะลา",
+"ร้อยเอ็ด",
+"ระนอง",
+"ระยอง",
+"ราชบุรี",
+"ลพบุรี",
+"ลำปาง",
+"ลำพูน",
+"เลย",
+"ศรีสะเกษ",
+"สกลนคร",
+"สงขลา",
+"สตูล",
+"สมุทรปราการ",
+"สมุทรสงคราม",
+"สมุทรสาคร",
+"สระแก้ว",
+"สระบุรี",
+"สิงห์บุรี",
+"สุโขทัย",
+"สุพรรณบุรี",
+"สุราษฎร์ธานี",
+"สุรินทร์",
+"หนองคาย",
+"หนองบัวลำภู",
+"อ่างทอง",
+"อำนาจเจริญ",
+"อุดรธานี",
+"อุตรดิตถ์",
+"อุทัยธานี",
+"อุบลราชธานี"
+];
+
+const provinceSelect =
+document.getElementById("province");
+
+provinces.forEach(function(p){
+
+  const option =
+  document.createElement("option");
+
+  option.value = p;
+  option.textContent = p;
+
+  provinceSelect.appendChild(option);
+
+});
+
+
+/* ==========================================================
+   HELPERS
+========================================================== */
+
+function show(id){
+  document.getElementById(id)
+  .classList.remove("hidden");
+}
+
+function hide(id){
+  document.getElementById(id)
+  .classList.add("hidden");
+}
+
+function val(id){
+  return document.getElementById(id)
+  .value.trim();
+}
+
+function txt(id,value){
+  document.getElementById(id)
+  .textContent = value || "-";
+}
+
+function topPage(){
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+
+function setProgress(n){
+
+  [1,2,3].forEach(function(i){
+
+    const element =
+    document.getElementById("p"+i);
+
+    if(element){
+      element.classList.toggle(
+        "active",
+        i <= n
+      );
+    }
+
+  });
+
+}
+
+
+/* ==========================================================
+   PAGE NAVIGATION
+========================================================== */
+
 function goPage2(){
- const memberId=document.getElementById("member_id").value.trim(), name=document.getElementById("full_name").value.trim(), phone=document.getElementById("phone").value.trim(), email=document.getElementById("email").value.trim();
- const e=document.getElementById("page1Error"); e.classList.add("hidden");
- if(!memberId||!name||!phone){e.textContent="กรุณากรอกรหัสสมาชิก ชื่อ-นามสกุล และเบอร์โทรศัพท์ให้ครบ";e.classList.remove("hidden");return}
- if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){e.textContent="รูปแบบอีเมลไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง";e.classList.remove("hidden");return}
- hide("page1");show("page2");topPage()
-}
-function editData(){hide("preview");show("page2");setProgress(1);topPage()}
-function closeConsent(){hide("consentModal")}
-function acceptConsent(){if(!document.getElementById("consentCheck").checked){alert("กรุณาติ๊กยอมรับข้อตกลงก่อนดำเนินการต่อ");return} consentAccepted=true;hide("consentModal");fillPreview();hide("page2");show("preview");setProgress(2);topPage()}
 
-async function reviewData(){
- const referrerId=document.getElementById("referrer_member_id").value.trim(), err=document.getElementById("referrerError"), btn=document.getElementById("reviewBtn");
- err.classList.add("hidden"); verifiedReferrer=null; consentAccepted=false; document.getElementById("consentCheck").checked=false;
- if(!referrerId){err.textContent="กรุณากรอกรหัสสมาชิกผู้แนะนำ";err.classList.remove("hidden");return}
- btn.disabled=true;btn.textContent="กำลังตรวจสอบผู้แนะนำ...";
- try{
-  const response=await fetch(MAKE_WEBHOOK,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"CHECK_REFERRER",referrer_member_id:referrerId})});
-  if(!response.ok)throw new Error("HTTP "+response.status);
-  const data=await response.json();
-  if(data.success&&data.member_id){
-   verifiedReferrer={member_id:data.member_id,full_name:data.full_name||""};
-   show("consentModal");
-  }else{err.textContent="ไม่พบรหัสสมาชิกผู้แนะนำที่มีสถานะ ACTIVE กรุณาตรวจสอบอีกครั้ง";err.classList.remove("hidden")}
- }catch(error){err.textContent="ไม่สามารถตรวจสอบข้อมูลได้ กรุณาลองใหม่อีกครั้ง";err.classList.remove("hidden")}
- finally{btn.disabled=false;btn.textContent="ตรวจสอบข้อมูล →"}
+  if(!verifiedApplicant ||
+     !verifiedReferrer){
+    return;
+  }
+
+  hide("page1");
+  hide("preview");
+  show("page2");
+
+  setProgress(1);
+  topPage();
 }
-function val(id){return document.getElementById(id).value.trim()}
-function txt(id,v){document.getElementById(id).textContent=v||"-"}
+
+
+/*
+ย้อนกลับจาก Preview
+
+ตาม Flow ที่ตกลง:
+Preview → กลับหน้า "ข้อมูลเพิ่มเติม"
+
+ค่าทั้งหมดที่กรอกไว้จะยังอยู่
+ไม่ล้างข้อมูล
+*/
+function editData(){
+
+  hide("preview");
+  show("page2");
+
+  setProgress(1);
+  topPage();
+}
+
+
+/* ==========================================================
+   CONSENT
+========================================================== */
+
+function openConsent(){
+
+  document.getElementById(
+    "consentCheck"
+  ).checked = false;
+
+  show("consentModal");
+}
+
+function closeConsent(){
+
+  hide("consentModal");
+}
+
+
+/*
+ปุ่มสุดท้ายจริง
+
+ยอมรับและยืนยันการสมัคร
+→ ตรงนี้จึงส่ง MEMBER_CUSTOMER_REGISTER
+*/
+async function acceptConsentAndSubmit(){
+
+  const checkbox =
+  document.getElementById(
+    "consentCheck"
+  );
+
+  if(!checkbox.checked){
+
+    alert(
+      "กรุณาติ๊กยอมรับข้อตกลงก่อนยืนยันการสมัคร"
+    );
+
+    return;
+  }
+
+  consentAccepted = true;
+
+  hide("consentModal");
+
+  await submitMember();
+}
+
+
+/* ==========================================================
+   PAGE 1
+   ตรวจผู้สมัคร + ตรวจผู้แนะนำ
+========================================================== */
+
+async function checkEligibility(){
+
+  const memberId =
+  val("member_id");
+
+  const fullName =
+  val("full_name");
+
+  const phone =
+  val("phone");
+
+  const referrerId =
+  val("referrer_member_id");
+
+  const errorBox =
+  document.getElementById(
+    "page1Error"
+  );
+
+  const button =
+  document.getElementById(
+    "eligibilityBtn"
+  );
+
+
+  errorBox.classList.add("hidden");
+
+  hide("eligibilityBox");
+
+  verifiedApplicant = false;
+  verifiedReferrer = null;
+  consentAccepted = false;
+
+
+  if(
+    !memberId ||
+    !fullName ||
+    !phone ||
+    !referrerId
+  ){
+
+    errorBox.textContent =
+    "กรุณากรอกรหัสสมาชิก ชื่อ-นามสกุล เบอร์โทรศัพท์ และรหัสสมาชิกผู้แนะนำให้ครบ";
+
+    errorBox.classList.remove(
+      "hidden"
+    );
+
+    return;
+  }
+
+
+  button.disabled = true;
+  button.textContent =
+  "กำลังตรวจสอบสิทธิ์...";
+
+
+  try{
+
+    /* ------------------------------------------
+       ด่าน 1
+       CHECK_MEMBER_ELIGIBILITY
+
+       Make:
+       member_id + full_name + phone
+       ต้องตรงครบ 3 ค่า
+    ------------------------------------------ */
+
+    const applicantResponse =
+    await fetch(
+      MAKE_WEBHOOK,
+      {
+        method:"POST",
+
+        headers:{
+          "Content-Type":
+          "application/json"
+        },
+
+        body:JSON.stringify({
+          action:
+          "CHECK_MEMBER_ELIGIBILITY",
+
+          member_id:
+          memberId,
+
+          full_name:
+          fullName,
+
+          phone:
+          phone
+        })
+      }
+    );
+
+
+    if(!applicantResponse.ok){
+
+      throw new Error(
+        "CHECK_MEMBER_ELIGIBILITY HTTP " +
+        applicantResponse.status
+      );
+
+    }
+
+
+    const applicantData =
+    await applicantResponse.json();
+
+
+    if(
+      applicantData.success !== true ||
+      applicantData.eligible !== true
+    ){
+
+      errorBox.textContent =
+      applicantData.message ||
+      "ไม่พบข้อมูลสมาชิก หรือข้อมูลไม่ตรงกับข้อมูลในระบบ";
+
+      errorBox.classList.remove(
+        "hidden"
+      );
+
+      return;
+    }
+
+
+    verifiedApplicant = true;
+
+
+    /* ------------------------------------------
+       ด่าน 2
+       CHECK_REFERRER
+
+       จะทำงานก็ต่อเมื่อ
+       ผู้สมัครผ่านด่านแรกแล้วเท่านั้น
+    ------------------------------------------ */
+
+    const referrerResponse =
+    await fetch(
+      MAKE_WEBHOOK,
+      {
+        method:"POST",
+
+        headers:{
+          "Content-Type":
+          "application/json"
+        },
+
+        body:JSON.stringify({
+          action:
+          "CHECK_REFERRER",
+
+          referrer_member_id:
+          referrerId
+        })
+      }
+    );
+
+
+    if(!referrerResponse.ok){
+
+      throw new Error(
+        "CHECK_REFERRER HTTP " +
+        referrerResponse.status
+      );
+
+    }
+
+
+    const referrerData =
+    await referrerResponse.json();
+
+
+    if(
+      referrerData.success === true &&
+      referrerData.member_id
+    ){
+
+      verifiedReferrer = {
+
+        member_id:
+        referrerData.member_id,
+
+        full_name:
+        referrerData.full_name || ""
+
+      };
+
+
+      /*
+      ป้องกันการแทรก HTML
+      โดยใช้ textContent
+      */
+
+      const eligibilityText =
+      document.getElementById(
+        "eligibilityText"
+      );
+
+      eligibilityText.innerHTML = "";
+
+      const line1 =
+      document.createElement("div");
+
+      line1.textContent =
+      "ตรวจสอบข้อมูลเรียบร้อยแล้ว";
+
+
+      const line2 =
+      document.createElement("div");
+
+      const b1 =
+      document.createElement("b");
+
+      b1.textContent =
+      "ผู้แนะนำ: ";
+
+      line2.appendChild(b1);
+
+      line2.appendChild(
+        document.createTextNode(
+          verifiedReferrer.full_name ||
+          "-"
+        )
+      );
+
+
+      const line3 =
+      document.createElement("div");
+
+      const b2 =
+      document.createElement("b");
+
+      b2.textContent =
+      "รหัสสมาชิก: ";
+
+      line3.appendChild(b2);
+
+      line3.appendChild(
+        document.createTextNode(
+          verifiedReferrer.member_id
+        )
+      );
+
+
+      eligibilityText.appendChild(
+        line1
+      );
+
+      eligibilityText.appendChild(
+        line2
+      );
+
+      eligibilityText.appendChild(
+        line3
+      );
+
+
+      show("eligibilityBox");
+
+    }
+    else{
+
+      verifiedReferrer = null;
+
+      errorBox.textContent =
+      "ไม่พบผู้แนะนำที่มีสถานะ ACTIVE กรุณาตรวจสอบรหัสสมาชิกผู้แนะนำอีกครั้ง";
+
+      errorBox.classList.remove(
+        "hidden"
+      );
+
+    }
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    verifiedApplicant = false;
+    verifiedReferrer = null;
+
+    errorBox.textContent =
+    "ไม่สามารถตรวจสอบข้อมูลได้ กรุณาลองใหม่อีกครั้ง";
+
+    errorBox.classList.remove(
+      "hidden"
+    );
+
+  }
+  finally{
+
+    button.disabled = false;
+
+    button.textContent =
+    "ตรวจสอบสิทธิ์การสมัคร";
+
+  }
+
+}
+
+
+/* ==========================================================
+   PAGE 2 → PREVIEW
+========================================================== */
+
+function reviewData(){
+
+  const email =
+  val("email");
+
+  const errorBox =
+  document.getElementById(
+    "page2Error"
+  );
+
+  errorBox.classList.add(
+    "hidden"
+  );
+
+
+  /*
+  ตรวจ email เฉพาะกรณีกรอก
+  เพราะ email ไม่บังคับ
+  */
+
+  if(
+    email &&
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    .test(email)
+  ){
+
+    errorBox.textContent =
+    "รูปแบบอีเมลไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง";
+
+    errorBox.classList.remove(
+      "hidden"
+    );
+
+    return;
+  }
+
+
+  /*
+  ต้องผ่านด่านหน้าแรกแล้ว
+  */
+
+  if(
+    !verifiedApplicant ||
+    !verifiedReferrer
+  ){
+
+    errorBox.textContent =
+    "ข้อมูลการตรวจสอบสิทธิ์ไม่พร้อม กรุณากลับไปตรวจสอบข้อมูลใหม่";
+
+    errorBox.classList.remove(
+      "hidden"
+    );
+
+    return;
+  }
+
+
+  fillPreview();
+
+  hide("page2");
+  show("preview");
+
+  setProgress(2);
+  topPage();
+}
+
+
+/* ==========================================================
+   PREVIEW DATA
+========================================================== */
+
 function fillPreview(){
- txt("s_member_id",val("member_id"));txt("s_full_name",val("full_name"));txt("s_phone",val("phone"));txt("s_email",val("email"));
- txt("s_line_id",val("line_id"));txt("s_nickname",val("nickname"));txt("s_province",val("province"));txt("s_income",val("expected_income"));txt("s_interest",val("interest_type"));
- txt("s_referrer_id",verifiedReferrer?.member_id);txt("s_referrer_name",verifiedReferrer?.full_name);
+
+  txt(
+    "s_member_id",
+    val("member_id")
+  );
+
+  txt(
+    "s_full_name",
+    val("full_name")
+  );
+
+  txt(
+    "s_phone",
+    val("phone")
+  );
+
+  txt(
+    "s_email",
+    val("email")
+  );
+
+  txt(
+    "s_nickname",
+    val("nickname")
+  );
+
+  txt(
+    "s_line_id",
+    val("line_id")
+  );
+
+  txt(
+    "s_province",
+    val("province")
+  );
+
+  txt(
+    "s_income",
+    val("expected_income")
+  );
+
+  txt(
+    "s_interest",
+    val("interest_type")
+  );
+
+  txt(
+    "s_referrer_id",
+    verifiedReferrer.member_id
+  );
+
+  txt(
+    "s_referrer_name",
+    verifiedReferrer.full_name
+  );
+
 }
+
+
+/* ==========================================================
+   FINAL SUBMIT
+   MEMBER_CUSTOMER_REGISTER
+
+   ทำงานเฉพาะหลัง Consent เท่านั้น
+========================================================== */
+
 async function submitMember(){
- if(!consentAccepted||!verifiedReferrer){alert("กรุณาตรวจสอบข้อมูลและยอมรับข้อตกลงก่อนสมัครสมาชิก");return}
- const submitBtn=document.getElementById("submitBtn");submitBtn.disabled=true;submitBtn.textContent="กำลังส่งข้อมูล...";
- const payload={action:"MEMBER_CUSTOMER_REGISTER",line_user_id:lineUserId,line_id:val("line_id"),line_display_name:lineDisplayName,member_id:val("member_id"),full_name:val("full_name"),phone:val("phone"),email:val("email"),nickname:val("nickname"),province:val("province"),expected_income:val("expected_income"),interest_type:val("interest_type"),referrer_member_id:verifiedReferrer.member_id,referrer_name:verifiedReferrer.full_name};
- try{
-  const response=await fetch(MAKE_WEBHOOK,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
-  if(!response.ok)throw new Error("HTTP "+response.status);
-  txt("success_member_id",payload.member_id);txt("success_full_name",payload.full_name);txt("success_phone",payload.phone);txt("success_email",payload.email);
-  document.getElementById("success_date").textContent=new Intl.DateTimeFormat("th-TH",{dateStyle:"medium",timeZone:"Asia/Bangkok"}).format(new Date());
-  hide("formArea");show("successBox");topPage();launchSuccessConfetti();
- }catch(error){alert("ส่งข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");submitBtn.disabled=false;submitBtn.textContent="ยืนยันสมัครสมาชิก"}
+
+  if(
+    !consentAccepted ||
+    !verifiedApplicant ||
+    !verifiedReferrer
+  ){
+
+    alert(
+      "กรุณาตรวจสอบข้อมูลและยอมรับข้อตกลงก่อนสมัครสมาชิก"
+    );
+
+    return;
+  }
+
+
+  const consentButton =
+  document.getElementById(
+    "consentBtn"
+  );
+
+  consentButton.disabled = true;
+  consentButton.textContent =
+  "กำลังบันทึกข้อมูล...";
+
+
+  const payload = {
+
+    action:
+    "MEMBER_CUSTOMER_REGISTER",
+
+    line_user_id:
+    lineUserId,
+
+    line_id:
+    val("line_id"),
+
+    line_display_name:
+    lineDisplayName,
+
+    member_id:
+    val("member_id"),
+
+    full_name:
+    val("full_name"),
+
+    phone:
+    val("phone"),
+
+    email:
+    val("email"),
+
+    nickname:
+    val("nickname"),
+
+    province:
+    val("province"),
+
+    expected_income:
+    val("expected_income"),
+
+    interest_type:
+    val("interest_type"),
+
+    referrer_member_id:
+    verifiedReferrer.member_id,
+
+    referrer_name:
+    verifiedReferrer.full_name
+
+  };
+
+
+  try{
+
+    const response =
+    await fetch(
+      MAKE_WEBHOOK,
+      {
+
+        method:"POST",
+
+        headers:{
+          "Content-Type":
+          "application/json"
+        },
+
+        body:
+        JSON.stringify(payload)
+
+      }
+    );
+
+
+    if(!response.ok){
+
+      throw new Error(
+        "MEMBER_CUSTOMER_REGISTER HTTP " +
+        response.status
+      );
+
+    }
+
+
+    /*
+    ส่งสำเร็จแล้วจึงแสดง Success
+    */
+
+    txt(
+      "success_member_id",
+      payload.member_id
+    );
+
+    txt(
+      "success_full_name",
+      payload.full_name
+    );
+
+    txt(
+      "success_phone",
+      payload.phone
+    );
+
+    txt(
+      "success_email",
+      payload.email
+    );
+
+
+    document.getElementById(
+      "success_date"
+    ).textContent =
+    new Intl.DateTimeFormat(
+      "th-TH",
+      {
+        dateStyle:"medium",
+        timeZone:"Asia/Bangkok"
+      }
+    ).format(new Date());
+
+
+    hide("formArea");
+    show("successBox");
+
+    setProgress(3);
+    topPage();
+
+    /*
+    เอฟเฟกต์ริบบิ้นเขียว + ทอง
+    เฉพาะเมื่อบันทึกสำเร็จ
+    */
+
+    launchSuccessConfetti();
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    alert(
+      "ส่งข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง"
+    );
+
+    /*
+    ถ้าส่งไม่สำเร็จ
+    เปิด Consent กลับขึ้นมา
+    เพื่อไม่ให้ผู้ใช้ต้องเริ่มใหม่
+    */
+
+    consentAccepted = false;
+
+    document.getElementById(
+      "consentCheck"
+    ).checked = true;
+
+    show("consentModal");
+
+    consentButton.disabled = false;
+
+    consentButton.textContent =
+    "ยอมรับและยืนยันการสมัคร";
+
+  }
+
 }
-function returnToLine(){window.location.href="https://lin.ee/7fmAKOD"}
+
+
+/* ==========================================================
+   RETURN TO LINE
+========================================================== */
+
+function returnToLine(){
+
+  window.location.href =
+  "https://lin.ee/7fmAKOD";
+
+}
+
+
+/* ==========================================================
+   SUCCESS CONFETTI
+   เขียว + ทอง แบบเดิม
+========================================================== */
+
 function launchSuccessConfetti(){
- const colors=["#16a34a","#22c55e","#f5c451","#f59e0b"];const amount=90;
- for(let i=0;i<amount;i++){const c=document.createElement("span");c.style.position="fixed";c.style.zIndex="9999";c.style.width=Math.random()*8+5+"px";c.style.height=Math.random()*12+6+"px";c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.left=Math.random()*100+"vw";c.style.top="-20px";c.style.borderRadius="2px";c.style.pointerEvents="none";const duration=Math.random()*2+2.5,rotate=Math.random()*720;c.animate([{transform:"translateY(0) rotate(0deg)",opacity:1},{transform:"translateY(110vh) rotate("+rotate+"deg)",opacity:.9}],{duration:duration*1000,easing:"cubic-bezier(.25,.46,.45,.94)"});document.body.appendChild(c);setTimeout(()=>c.remove(),duration*1000)}
+
+  const colors = [
+    "#16a34a",
+    "#22c55e",
+    "#f5c451",
+    "#f59e0b"
+  ];
+
+  const amount = 90;
+
+
+  for(
+    let i=0;
+    i<amount;
+    i++
+  ){
+
+    const piece =
+    document.createElement(
+      "span"
+    );
+
+
+    piece.style.position =
+    "fixed";
+
+    piece.style.zIndex =
+    "9999";
+
+    piece.style.width =
+    (Math.random()*8+5) +
+    "px";
+
+    piece.style.height =
+    (Math.random()*12+6) +
+    "px";
+
+    piece.style.background =
+    colors[
+      Math.floor(
+        Math.random()*
+        colors.length
+      )
+    ];
+
+    piece.style.left =
+    (Math.random()*100) +
+    "vw";
+
+    piece.style.top =
+    "-20px";
+
+    piece.style.borderRadius =
+    "2px";
+
+    piece.style.pointerEvents =
+    "none";
+
+
+    const duration =
+    Math.random()*2 + 2.5;
+
+    const rotate =
+    Math.random()*720;
+
+
+    piece.animate(
+      [
+        {
+          transform:
+          "translateY(0) rotate(0deg)",
+          opacity:1
+        },
+        {
+          transform:
+          "translateY(110vh) rotate("+
+          rotate+
+          "deg)",
+          opacity:.9
+        }
+      ],
+      {
+        duration:
+        duration*1000,
+
+        easing:
+        "cubic-bezier(.25,.46,.45,.94)"
+      }
+    );
+
+
+    document.body.appendChild(
+      piece
+    );
+
+
+    setTimeout(
+      function(){
+        piece.remove();
+      },
+      duration*1000
+    );
+
+  }
+
 }
+
 </script>
+
 </body>
 </html>
