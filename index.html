@@ -169,6 +169,44 @@ input:focus,select:focus{
   font-size:23px;
 }
 
+.page2-verified{
+  border:1px solid #bce8d2;
+  border-radius:16px;
+  padding:15px;
+  margin:0 0 18px;
+  background:#effbf5;
+}
+.page2-verified .verified-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:8px;
+}
+.page2-verified .verified-title{
+  color:#087b47;
+  font-size:16px;
+  font-weight:800;
+}
+.page2-verified .verified-badge{
+  color:#087b47;
+  font-size:12px;
+  font-weight:800;
+  white-space:nowrap;
+}
+.page2-verified .lock-note{
+  margin-top:9px;
+  color:#6f8078;
+  font-size:12px;
+  line-height:1.5;
+}
+.page2-section-title{
+  margin:18px 0 4px;
+  font-size:16px;
+  font-weight:800;
+  color:#263a31;
+}
+
 .notice{
   padding:13px;
   border-radius:12px;
@@ -424,6 +462,32 @@ input:focus,select:focus{
     <div class="title">ข้อมูลเพิ่มเติม</div>
   </div>
 
+  <div class="page2-verified">
+    <div class="verified-head">
+      <div class="verified-title">✓ ข้อมูลสมาชิก</div>
+      <div class="verified-badge">ตรวจสอบแล้ว 🔒</div>
+    </div>
+
+    <div class="row">
+      <span>รหัสสมาชิก</span>
+      <span id="p2_member_id"></span>
+    </div>
+    <div class="row">
+      <span>ชื่อ-นามสกุล</span>
+      <span id="p2_full_name"></span>
+    </div>
+    <div class="row">
+      <span>เบอร์โทร</span>
+      <span id="p2_phone"></span>
+    </div>
+
+    <div class="lock-note">
+      ข้อมูลหลักผ่านการตรวจสอบแล้ว และไม่สามารถแก้ไขในขั้นตอนนี้ได้
+    </div>
+  </div>
+
+  <div class="page2-section-title">ข้อมูลเพิ่มเติม</div>
+
   <div class="field">
     <label>ชื่อเล่น</label>
     <input id="nickname"
@@ -500,6 +564,26 @@ input:focus,select:focus{
         อื่นๆ
       </option>
     </select>
+  </div>
+
+  <div class="page2-verified">
+    <div class="verified-head">
+      <div class="verified-title">✓ ข้อมูลผู้แนะนำ</div>
+      <div class="verified-badge">ตรวจสอบแล้ว 🔒</div>
+    </div>
+
+    <div class="row">
+      <span>รหัสสมาชิก</span>
+      <span id="p2_referrer_id"></span>
+    </div>
+    <div class="row">
+      <span>ชื่อผู้แนะนำ</span>
+      <span id="p2_referrer_name"></span>
+    </div>
+
+    <div class="lock-note">
+      ผู้แนะนำผ่านการตรวจสอบสถานะ ACTIVE แล้ว และไม่สามารถเปลี่ยนในขั้นตอนนี้ได้
+    </div>
   </div>
 
   <div id="page2Error"
@@ -601,7 +685,7 @@ input:focus,select:focus{
     <button class="btn secondary"
             type="button"
             onclick="editData()">
-      ← ย้อนกลับ
+      ✎ แก้ไขข้อมูล
     </button>
 
     <button id="submitBtn"
@@ -963,12 +1047,45 @@ function setProgress(n){
    PAGE NAVIGATION
 ========================================================== */
 
+function fillPage2Verified(){
+
+  txt(
+    "p2_member_id",
+    val("member_id")
+  );
+
+  txt(
+    "p2_full_name",
+    val("full_name")
+  );
+
+  txt(
+    "p2_phone",
+    val("phone")
+  );
+
+  if(verifiedReferrer){
+    txt(
+      "p2_referrer_id",
+      verifiedReferrer.member_id
+    );
+
+    txt(
+      "p2_referrer_name",
+      verifiedReferrer.full_name
+    );
+  }
+
+}
+
 function goPage2(){
 
   if(!verifiedApplicant ||
      !verifiedReferrer){
     return;
   }
+
+  fillPage2Verified();
 
   hide("page1");
   hide("preview");
@@ -989,6 +1106,8 @@ Preview → กลับหน้า "ข้อมูลเพิ่มเติ
 ไม่ล้างข้อมูล
 */
 function editData(){
+
+  fillPage2Verified();
 
   hide("preview");
   show("page2");
