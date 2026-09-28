@@ -54,7 +54,7 @@ input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(8,1
         <div class="kicker">ข้อมูลเพิ่มเติม</div>
         <div class="title">ข้อมูลสมาชิกและผู้แนะนำ</div>
         <div class="field"><label>ชื่อเล่น</label><input id="nickname" placeholder="ชื่อเล่น"></div>
-        <div class="field"><label>LINE User ID</label><input id="line_user_display" readonly placeholder="ระบบจะรับจาก LINE"></div>
+        <div class="field"><label>LINE ID <span class="hint">(ไม่บังคับ)</span></label><input id="line_id" autocomplete="off" placeholder="กรอก LINE ID"></div>
         <div class="field"><label>จังหวัด</label><select id="province"><option value="">-- เลือกจังหวัด --</option></select></div>
         <div class="field"><label>รายได้ที่คาดหวัง</label><select id="expected_income">
           <option value="">-- เลือกรายได้ที่คาดหวัง --</option>
@@ -81,7 +81,7 @@ input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(8,1
         <div class="summary-card"><h3>👤 ข้อมูลสมาชิก</h3>
           <div class="row"><span>รหัสสมาชิก</span><span id="s_member_id"></span></div><div class="row"><span>ชื่อ-นามสกุล</span><span id="s_full_name"></span></div>
           <div class="row"><span>เบอร์โทร</span><span id="s_phone"></span></div><div class="row"><span>อีเมล</span><span id="s_email"></span></div>
-          <div class="row"><span>LINE User ID</span><span id="s_line_user_id"></span></div><div class="row"><span>ชื่อเล่น</span><span id="s_nickname"></span></div>
+          <div class="row"><span>LINE ID</span><span id="s_line_id"></span></div>
           <div class="row"><span>จังหวัด</span><span id="s_province"></span></div><div class="row"><span>รายได้ที่คาดหวัง</span><span id="s_income"></span></div>
           <div class="row"><span>ความสนใจ</span><span id="s_interest"></span></div>
         </div>
@@ -172,13 +172,13 @@ function val(id){return document.getElementById(id).value.trim()}
 function txt(id,v){document.getElementById(id).textContent=v||"-"}
 function fillPreview(){
  txt("s_member_id",val("member_id"));txt("s_full_name",val("full_name"));txt("s_phone",val("phone"));txt("s_email",val("email"));
- txt("s_line_user_id",lineUserId);txt("s_nickname",val("nickname"));txt("s_province",val("province"));txt("s_income",val("expected_income"));txt("s_interest",val("interest_type"));
+ txt("s_line_id",val("line_id"));txt("s_nickname",val("nickname"));txt("s_province",val("province"));txt("s_income",val("expected_income"));txt("s_interest",val("interest_type"));
  txt("s_referrer_id",verifiedReferrer?.member_id);txt("s_referrer_name",verifiedReferrer?.full_name);
 }
 async function submitMember(){
  if(!consentAccepted||!verifiedReferrer){alert("กรุณาตรวจสอบข้อมูลและยอมรับข้อตกลงก่อนสมัครสมาชิก");return}
  const submitBtn=document.getElementById("submitBtn");submitBtn.disabled=true;submitBtn.textContent="กำลังส่งข้อมูล...";
- const payload={action:"MEMBER_CUSTOMER_REGISTER",line_user_id:lineUserId,line_display_name:lineDisplayName,member_id:val("member_id"),full_name:val("full_name"),phone:val("phone"),email:val("email"),nickname:val("nickname"),province:val("province"),expected_income:val("expected_income"),interest_type:val("interest_type"),referrer_member_id:verifiedReferrer.member_id,referrer_name:verifiedReferrer.full_name};
+ const payload={action:"MEMBER_CUSTOMER_REGISTER",line_user_id:lineUserId,line_id:val("line_id"),line_display_name:lineDisplayName,member_id:val("member_id"),full_name:val("full_name"),phone:val("phone"),email:val("email"),nickname:val("nickname"),province:val("province"),expected_income:val("expected_income"),interest_type:val("interest_type"),referrer_member_id:verifiedReferrer.member_id,referrer_name:verifiedReferrer.full_name};
  try{
   const response=await fetch(MAKE_WEBHOOK,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
   if(!response.ok)throw new Error("HTTP "+response.status);
