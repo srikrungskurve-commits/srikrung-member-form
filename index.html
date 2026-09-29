@@ -379,7 +379,7 @@ input:focus,select:focus{
 <main class="content">
 
 <!-- =========================
-     หน้า 1 : ด่านตรวจสิทธิ์
+     หน้า 1 : ตรวจสอบข้อมูลการลงทะเบียน
 ========================= -->
 <section id="page1" class="panel">
 
@@ -415,7 +415,7 @@ input:focus,select:focus{
            autocomplete="off"
            placeholder="กรอกรหัสสมาชิกผู้แนะนำ">
     <div class="hint">
-      ระบบจะตรวจสอบข้อมูลผู้สมัครก่อน แล้วจึงตรวจสอบผู้แนะนำ
+      ระบบจะตรวจสอบข้อมูลการลงทะเบียนก่อน แล้วจึงตรวจสอบผู้แนะนำ
     </div>
   </div>
 
@@ -427,14 +427,14 @@ input:focus,select:focus{
             class="btn outline"
             type="button"
             onclick="checkEligibility()">
-      ตรวจสอบสิทธิ์การสมัคร
+      ตรวจสอบข้อมูลการลงทะเบียน
     </button>
   </div>
 
   <div id="eligibilityBox"
        class="eligibility hidden">
 
-    <h3>✅ คุณมีสิทธิ์สมัครสมาชิก</h3>
+    <h3>✅ ตรวจสอบข้อมูลเรียบร้อยแล้ว</h3>
 
     <div id="eligibilityText"></div>
 
@@ -1173,177 +1173,112 @@ async function acceptConsentAndSubmit(){
 
 async function checkEligibility(){
 
-  const memberId =
-  val("member_id");
+  const memberId = val("member_id");
+  const fullName = val("full_name");
+  const phone = val("phone");
+  const referrerId = val("referrer_member_id");
 
-  const fullName =
-  val("full_name");
-
-  const phone =
-  val("phone");
-
-  const referrerId =
-  val("referrer_member_id");
-
-  const errorBox =
-  document.getElementById(
-    "page1Error"
-  );
-
-  const button =
-  document.getElementById(
-    "eligibilityBtn"
-  );
-
+  const errorBox = document.getElementById("page1Error");
+  const button = document.getElementById("eligibilityBtn");
 
   errorBox.classList.add("hidden");
-
   hide("eligibilityBox");
 
   verifiedApplicant = false;
   verifiedReferrer = null;
   consentAccepted = false;
 
-
-  if(
-    !memberId ||
-    !fullName ||
-    !phone ||
-    !referrerId
-  ){
-
+  if(!memberId || !fullName || !phone || !referrerId){
     errorBox.textContent =
-    "กรุณากรอกรหัสสมาชิก ชื่อ-นามสกุล เบอร์โทรศัพท์ และรหัสสมาชิกผู้แนะนำให้ครบ";
-
-    errorBox.classList.remove(
-      "hidden"
-    );
-
+      "กรุณากรอกรหัสสมาชิก ชื่อ-นามสกุล เบอร์โทรศัพท์ และรหัสสมาชิกผู้แนะนำให้ครบ";
+    errorBox.classList.remove("hidden");
     return;
   }
 
-
   button.disabled = true;
-  button.textContent =
-  "กำลังตรวจสอบสิทธิ์...";
-
+  button.textContent = "กำลังตรวจสอบข้อมูล...";
 
   try{
 
     /* ------------------------------------------
-       ด่าน 1
-       CHECK_MEMBER_ELIGIBILITY
+       ด่าน 1 : CUSTOMER_MEMBER_REGISTER_CHECK
 
-       Make:
-       member_id + full_name + phone
-       ต้องตรงครบ 3 ค่า
+       ตรวจรหัสสมาชิกก่อนสมัครซ้ำ
+       - registered:true  = เคยสมัครแล้ว → หยุด
+       - registered:false = ยังสมัครได้ → ไปตรวจผู้แนะนำต่อ
     ------------------------------------------ */
 
-    const applicantResponse =
-    await fetch(
-      MAKE_WEBHOOK,
-      {
-        method:"POST",
-
-        headers:{
-          "Content-Type":
-          "application/json"
-        },
-
-        body:JSON.stringify({
-          action:
-          "CHECK_MEMBER_ELIGIBILITY",
-
-          member_id:
-          memberId,
-
-          full_name:
-          fullName,
-
-          phone:
-          phone
-        })
-      }
-    );
-
+    const applicantResponse = await fetch(MAKE_WEBHOOK, {
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        action:"CUSTOMER_MEMBER_REGISTER_CHECK",
+        member_id:memberId,
+        full_name:fullName,
+        phone:phone,
+        line_user_id:lineUserId,
+        line_display_name:lineDisplayName
+      })
+    });
 
     if(!applicantResponse.ok){
-
       throw new Error(
-        "CHECK_MEMBER_ELIGIBILITY HTTP " +
-        applicantResponse.status
+        "CUSTOMER_MEMBER_REGISTER_CHECK HTTP " + applicantResponse.status
       );
-
     }
 
+    const applicantData = await applicantResponse.json();
 
-    const applicantData =
-    await applicantResponse.json();
-
-
-    if(
-      applicantData.success !== true ||
-      applicantData.eligible !== true
-    ){
-
+    /* รหัสนี้เคยสมัครแล้ว */
+    if(applicantData.registered === true){
       errorBox.textContent =
-      applicantData.message ||
-      "ไม่พบข้อมูลสมาชิก หรือข้อมูลไม่ตรงกับข้อมูลในระบบ";
-
-      errorBox.classList.remove(
-        "hidden"
-      );
-
+        applicantData.message ||
+        "รหัสสมาชิกนี้ได้ลงทะเบียนแล้ว ไม่สามารถสมัครซ้ำได้";
+      errorBox.classList.remove("hidden");
       return;
     }
 
+    /* ไม่พบรหัส หรือ Make ไม่อนุญาตให้ผ่าน */
+    if(
+      applicantData.success !== true ||
+      applicantData.eligible !== true ||
+      applicantData.registered !== false
+    ){
+      errorBox.textContent =
+        applicantData.message ||
+        "ไม่สามารถตรวจสอบรหัสสมาชิกได้ กรุณาตรวจสอบข้อมูลอีกครั้ง";
+      errorBox.classList.remove("hidden");
+      return;
+    }
 
     verifiedApplicant = true;
 
-
     /* ------------------------------------------
-       ด่าน 2
-       CHECK_REFERRER
+       ด่าน 2 : CHECK_REFERRER
 
-       จะทำงานก็ต่อเมื่อ
-       ผู้สมัครผ่านด่านแรกแล้วเท่านั้น
+       ทำงานเฉพาะเมื่อรหัสผู้สมัครผ่านด่านแรกแล้ว
     ------------------------------------------ */
 
-    const referrerResponse =
-    await fetch(
-      MAKE_WEBHOOK,
-      {
-        method:"POST",
-
-        headers:{
-          "Content-Type":
-          "application/json"
-        },
-
-        body:JSON.stringify({
-          action:
-          "CHECK_REFERRER",
-
-          referrer_member_id:
-          referrerId
-        })
-      }
-    );
-
+    const referrerResponse = await fetch(MAKE_WEBHOOK, {
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        action:"CHECK_REFERRER",
+        referrer_member_id:referrerId
+      })
+    });
 
     if(!referrerResponse.ok){
-
       throw new Error(
-        "CHECK_REFERRER HTTP " +
-        referrerResponse.status
+        "CHECK_REFERRER HTTP " + referrerResponse.status
       );
-
     }
 
-
-    const referrerData =
-    await referrerResponse.json();
-
+    const referrerData = await referrerResponse.json();
 
     if(
       referrerData.success === true &&
@@ -1351,127 +1286,71 @@ async function checkEligibility(){
     ){
 
       verifiedReferrer = {
-
-        member_id:
-        referrerData.member_id,
-
-        full_name:
-        referrerData.full_name || ""
-
+        member_id:referrerData.member_id,
+        full_name:referrerData.full_name || ""
       };
 
-
-      /*
-      ป้องกันการแทรก HTML
-      โดยใช้ textContent
-      */
-
+      /* ป้องกันการแทรก HTML โดยใช้ textContent */
       const eligibilityText =
-      document.getElementById(
-        "eligibilityText"
-      );
+        document.getElementById("eligibilityText");
 
       eligibilityText.innerHTML = "";
 
-      const line1 =
-      document.createElement("div");
+      const line1 = document.createElement("div");
+      line1.textContent = "ตรวจสอบข้อมูลเรียบร้อยแล้ว";
 
-      line1.textContent =
-      "ตรวจสอบข้อมูลเรียบร้อยแล้ว";
-
-
-      const line2 =
-      document.createElement("div");
-
-      const b1 =
-      document.createElement("b");
-
-      b1.textContent =
-      "ผู้แนะนำ: ";
-
+      const line2 = document.createElement("div");
+      const b1 = document.createElement("b");
+      b1.textContent = "ผู้แนะนำ: ";
       line2.appendChild(b1);
-
       line2.appendChild(
         document.createTextNode(
-          verifiedReferrer.full_name ||
-          "-"
+          verifiedReferrer.full_name || "-"
         )
       );
 
-
-      const line3 =
-      document.createElement("div");
-
-      const b2 =
-      document.createElement("b");
-
-      b2.textContent =
-      "รหัสสมาชิก: ";
-
+      const line3 = document.createElement("div");
+      const b2 = document.createElement("b");
+      b2.textContent = "รหัสสมาชิก: ";
       line3.appendChild(b2);
-
       line3.appendChild(
         document.createTextNode(
           verifiedReferrer.member_id
         )
       );
 
-
-      eligibilityText.appendChild(
-        line1
-      );
-
-      eligibilityText.appendChild(
-        line2
-      );
-
-      eligibilityText.appendChild(
-        line3
-      );
-
+      eligibilityText.appendChild(line1);
+      eligibilityText.appendChild(line2);
+      eligibilityText.appendChild(line3);
 
       show("eligibilityBox");
 
-    }
-    else{
+    } else {
 
       verifiedReferrer = null;
-
       errorBox.textContent =
-      "ไม่พบผู้แนะนำที่มีสถานะ ACTIVE กรุณาตรวจสอบรหัสสมาชิกผู้แนะนำอีกครั้ง";
-
-      errorBox.classList.remove(
-        "hidden"
-      );
-
+        referrerData.message ||
+        "ไม่พบผู้แนะนำที่มีสถานะ ACTIVE กรุณาตรวจสอบรหัสสมาชิกผู้แนะนำอีกครั้ง";
+      errorBox.classList.remove("hidden");
     }
 
-  }
-  catch(error){
+  } catch(error){
 
     console.error(error);
-
     verifiedApplicant = false;
     verifiedReferrer = null;
 
     errorBox.textContent =
-    "ไม่สามารถตรวจสอบข้อมูลได้ กรุณาลองใหม่อีกครั้ง";
+      "ไม่สามารถตรวจสอบข้อมูลได้ กรุณาลองใหม่อีกครั้ง";
+    errorBox.classList.remove("hidden");
 
-    errorBox.classList.remove(
-      "hidden"
-    );
-
-  }
-  finally{
+  } finally {
 
     button.disabled = false;
-
-    button.textContent =
-    "ตรวจสอบสิทธิ์การสมัคร";
-
+    button.textContent = "ตรวจสอบข้อมูลการลงทะเบียน";
   }
-
 }
+
 
 
 /* ==========================================================
@@ -1525,7 +1404,7 @@ function reviewData(){
   ){
 
     errorBox.textContent =
-    "ข้อมูลการตรวจสอบสิทธิ์ไม่พร้อม กรุณากลับไปตรวจสอบข้อมูลใหม่";
+    "ข้อมูลการตรวจสอบการลงทะเบียนไม่พร้อม กรุณากลับไปตรวจสอบข้อมูลใหม่";
 
     errorBox.classList.remove(
       "hidden"
