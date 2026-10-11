@@ -1,0 +1,522 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SRIKRUNG S-Kurve | Member Management</title>
+  <style>
+    :root {
+      --green: #15803d;
+      --blue: #1766a3;
+      --red: #dc2626;
+      --bg: #f3f7f5;
+      --line: #e2e8e5;
+      --text: #17251f;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+    }
+
+    .container {
+      max-width: 540px;
+      margin: 24px auto;
+      padding: 16px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 5px 24px #163b2510;
+    }
+
+    .brand {
+      font-size: 21px;
+      font-weight: bold;
+      color: var(--green);
+    }
+
+    .subtitle {
+      color: #64748b;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    .demo {
+      display: inline-block;
+      background: #fef3c7;
+      color: #92400e;
+      border-radius: 20px;
+      padding: 5px 10px;
+      font-size: 12px;
+      margin-top: 12px;
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid var(--line);
+      margin: 22px 0;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 9px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #cbd5d1;
+      border-radius: 11px;
+      font-size: 16px;
+      background: white;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .search-row input { flex: 1; min-width: 0; }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 13px 16px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .search-btn {
+      background: #1f2937;
+      color: white;
+    }
+
+    .member-box {
+      background: #f5f7f6;
+      padding: 17px;
+      border-radius: 15px;
+      margin-top: 20px;
+    }
+
+    .member-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .status {
+      border-radius: 20px;
+      padding: 5px 11px;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .active {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .suspended {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid #e2e8e5;
+      padding: 12px 0;
+      font-size: 14px;
+    }
+
+    .info-row span:first-child { color: #64748b; }
+    .info-row strong { text-align: right; overflow-wrap: anywhere; }
+
+    .action-btn {
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .danger { background: var(--red); color: white; }
+    .success { background: var(--green); color: white; }
+    .secondary { background: #e5e7eb; color: #334155; }
+
+    .message {
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 14px;
+      background: #eff6ff;
+      color: #1e40af;
+      font-size: 14px;
+    }
+
+    .warning {
+      color: #92400e;
+      font-size: 13px;
+      margin-top: 14px;
+      line-height: 1.7;
+    }
+
+    .hidden { display: none !important; }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: #0008;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 10;
+    }
+
+    .dialog {
+      background: white;
+      padding: 24px;
+      border-radius: 18px;
+      max-width: 430px;
+      width: 100%;
+    }
+
+    .dialog h3 { margin-top: 0; }
+
+    .dialog-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .dialog-buttons button { flex: 1; }
+
+    @media (max-width: 400px) {
+      .card { padding: 16px; }
+      .info-row { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="card">
+
+    <div class="brand">SRIKRUNG S-Kurve</div>
+    <div class="subtitle">ADMIN • Member Management</div>
+    <div class="demo">DEMO — ยังไม่เชื่อมข้อมูลจริง</div>
+
+    <hr>
+
+    <label for="memberId">ค้นหาสมาชิกด้วยรหัส</label>
+    <div class="search-row">
+      <input id="memberId" placeholder="เช่น AM0006">
+      <button class="search-btn" onclick="searchMember()">
+        ค้นหา
+      </button>
+    </div>
+
+    <div id="message" class="message hidden"></div>
+
+    <div id="memberBox" class="member-box hidden">
+      <div class="member-head">
+        <strong>ข้อมูลสมาชิก</strong>
+        <span id="statusBadge" class="status"></span>
+      </div>
+
+      <div class="info-row">
+        <span>รหัสสมาชิก</span>
+        <strong id="viewId"></strong>
+      </div>
+
+      <div class="info-row">
+        <span>ชื่อ-นามสกุล</span>
+        <strong id="viewName"></strong>
+      </div>
+
+      <div class="info-row">
+        <span>เบอร์โทร</span>
+        <strong id="viewPhone"></strong>
+      </div>
+
+      <div class="info-row">
+        <span>รหัสผู้แนะนำ</span>
+        <strong id="viewReferrer"></strong>
+      </div>
+
+      <div class="info-row">
+        <span>สถานะ LINE</span>
+        <strong id="viewLine"></strong>
+      </div>
+
+      <div class="info-row">
+        <span>การยืนยัน</span>
+        <strong id="viewVerification"></strong>
+      </div>
+    </div>
+
+    <div id="actionArea" class="hidden">
+      <button id="suspendBtn"
+              class="action-btn danger"
+              onclick="openDialog('SUSPEND')">
+        ระงับสิทธิ์สมาชิก
+      </button>
+
+      <button id="activateBtn"
+              class="action-btn success hidden"
+              onclick="openDialog('ACTIVE')">
+        คืนสิทธิ์ ACTIVE
+      </button>
+    </div>
+
+    <div class="warning">
+      หน้านี้เป็นต้นแบบสำหรับทดสอบการแสดงผล
+      ยังไม่มีการตรวจสิทธิ์จริง และไม่ส่งคำสั่งไปยัง
+      Make.com หรือ Data Store
+    </div>
+
+  </div>
+</div>
+
+<div id="dialogOverlay" class="overlay hidden">
+  <div class="dialog">
+    <h3 id="dialogTitle"></h3>
+    <p id="dialogDescription"></p>
+
+    <div id="reasonArea">
+      <label for="reason">เหตุผลการระงับ</label>
+      <select id="reason">
+        <option value="ข้อมูลสมาชิกไม่ถูกต้อง">
+          ข้อมูลสมาชิกไม่ถูกต้อง
+        </option>
+        <option value="สมาชิกขอระงับเอง">
+          สมาชิกขอระงับเอง
+        </option>
+        <option value="ใช้งานผิดเงื่อนไข">
+          ใช้งานผิดเงื่อนไข
+        </option>
+        <option value="อื่น ๆ">อื่น ๆ</option>
+      </select>
+
+      <label for="reasonNote" style="margin-top:14px">
+        หมายเหตุเพิ่มเติม
+      </label>
+      <textarea id="reasonNote" rows="3"
+                placeholder="รายละเอียดเพิ่มเติม"></textarea>
+    </div>
+
+    <div class="dialog-buttons">
+      <button class="secondary" onclick="closeDialog()">
+        ยกเลิก
+      </button>
+      <button id="confirmBtn" onclick="confirmChange()">
+        ยืนยัน
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/*
+ * SRIKRUNG S-Kurve
+ * Member Management — DEMO VERSION
+ *
+ * FUTURE INTEGRATION:
+ * - LINE Login / LIFF authentication
+ * - Server-side ADMIN / SUB_ADMIN verification
+ * - Maximum 5 active SUB_ADMIN accounts
+ * - Make.com member lookup
+ * - Make.com member status update
+ * - Audit log
+ *
+ * SECURITY:
+ * Do not trust role or LINE User ID from URL.
+ * Do not put API keys or webhook secrets here.
+ * All write permissions must be checked server-side.
+ */
+
+const CONFIG = {
+  demoMode: true,
+  maxSubAdmins: 5,
+  roles: {
+    ADMIN: "ADMIN",
+    SUB_ADMIN: "SUB_ADMIN"
+  }
+};
+
+// Demo data only. Not connected to Member Master.
+const demoMembers = {
+  AM0006: {
+    member_id: "AM0006",
+    full_name: "นายหก ทดสอบ",
+    phone: "0611160060",
+    referrer_member_id: "AM0001",
+    member_status: "ACTIVE",
+    line_status: "ACTIVE",
+    verification_status: "VERIFIED"
+  },
+  AM0007: {
+    member_id: "AM0007",
+    full_name: "นางสาวเจ็ด ทดสอบ",
+    phone: "0611160070",
+    referrer_member_id: "AM0001",
+    member_status: "SUSPENDED",
+    line_status: "INACTIVE",
+    verification_status: "VERIFIED"
+  }
+};
+
+let currentMember = null;
+let pendingAction = null;
+
+function el(id) {
+  return document.getElementById(id);
+}
+
+function showMessage(text) {
+  el("message").textContent = text;
+  el("message").classList.remove("hidden");
+}
+
+function hideMessage() {
+  el("message").classList.add("hidden");
+}
+
+function searchMember() {
+  const id = el("memberId").value.trim().toUpperCase();
+
+  hideMessage();
+  el("memberBox").classList.add("hidden");
+  el("actionArea").classList.add("hidden");
+
+  if (!id) {
+    currentMember = null;
+    showMessage("กรุณากรอกรหัสสมาชิก");
+    return;
+  }
+
+  const member = demoMembers[id];
+
+  if (!member) {
+    currentMember = null;
+    showMessage("ไม่พบรหัสนี้ในข้อมูลตัวอย่าง");
+    return;
+  }
+
+  currentMember = member;
+  renderMember();
+}
+
+function renderMember() {
+  if (!currentMember) return;
+
+  const m = currentMember;
+
+  el("viewId").textContent = m.member_id;
+  el("viewName").textContent = m.full_name;
+  el("viewPhone").textContent = m.phone;
+  el("viewReferrer").textContent = m.referrer_member_id;
+  el("viewLine").textContent = m.line_status;
+  el("viewVerification").textContent = m.verification_status;
+
+  const badge = el("statusBadge");
+  badge.textContent = m.member_status;
+  badge.className = "status " +
+    (m.member_status === "ACTIVE" ? "active" : "suspended");
+
+  el("suspendBtn").classList.toggle(
+    "hidden", m.member_status !== "ACTIVE"
+  );
+
+  el("activateBtn").classList.toggle(
+    "hidden", m.member_status !== "SUSPENDED"
+  );
+
+  el("memberBox").classList.remove("hidden");
+  el("actionArea").classList.remove("hidden");
+}
+
+function openDialog(action) {
+  if (!currentMember) return;
+
+  pendingAction = action;
+
+  const suspending = action === "SUSPEND";
+
+  el("dialogTitle").textContent = suspending
+    ? "ยืนยันการระงับสมาชิก"
+    : "ยืนยันการคืนสิทธิ์ ACTIVE";
+
+  el("dialogDescription").textContent =
+    "รหัสสมาชิก: " + currentMember.member_id;
+
+  el("reasonArea").classList.toggle("hidden", !suspending);
+
+  el("confirmBtn").className =
+    suspending ? "danger" : "success";
+
+  el("reasonNote").value = "";
+  el("dialogOverlay").classList.remove("hidden");
+}
+
+function closeDialog() {
+  pendingAction = null;
+  el("dialogOverlay").classList.add("hidden");
+}
+
+function confirmChange() {
+  if (!currentMember || !pendingAction) return;
+
+  if (pendingAction === "SUSPEND") {
+    const reason = el("reason").value;
+    const note = el("reasonNote").value.trim();
+
+    if (reason === "อื่น ๆ" && !note) {
+      alert("กรุณาระบุเหตุผลเพิ่มเติม");
+      return;
+    }
+
+    currentMember.member_status = "SUSPENDED";
+    currentMember.line_status = "INACTIVE";
+  } else {
+    currentMember.member_status = "ACTIVE";
+    currentMember.line_status = "ACTIVE";
+  }
+
+  const result = pendingAction;
+  closeDialog();
+  renderMember();
+
+  showMessage(
+    result === "SUSPEND"
+      ? "จำลองระงับสมาชิกสำเร็จ (ยังไม่บันทึกจริง)"
+      : "จำลองคืนสิทธิ์ ACTIVE สำเร็จ (ยังไม่บันทึกจริง)"
+  );
+}
+
+// Accept member_id only as a lookup hint.
+// Never treat URL parameters as authentication.
+const params = new URLSearchParams(window.location.search);
+const initialId = params.get("member_id");
+
+if (initialId) {
+  el("memberId").value = initialId;
+  searchMember();
+}
+</script>
+
+</body>
+</html>
