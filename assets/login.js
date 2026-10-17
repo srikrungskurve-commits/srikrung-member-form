@@ -1,3 +1,4 @@
+import { createFirstTimeDemo } from './first-time-demo.mjs';
 import { loginConfig } from './login-config.js';
 import { AuthError, createAuthApi } from './login-api.mjs';
 import { memberError, newPasswordError } from './login-validation.mjs';
@@ -6,7 +7,8 @@ const api = createAuthApi(loginConfig);
 // Supply an approved provider adapter here only after server-side linking is ready.
 const providerSignIn = Object.freeze({ line: null, google: null });
 const el = id => document.getElementById(id);
-const panels = ['login', 'welcome', 'expired', 'password'];
+const panels = ['login', 'welcome', 'expired', 'password', 'first-time'];
+const demo = createFirstTimeDemo();
 let preview = false;
 let busy = false;
 let lineVerified = false;
@@ -21,19 +23,27 @@ const errors = {
 };
 Object.assign(errors, { INVALID_CREDENTIALS: 'ไม่สามารถเข้าสู่ระบบได้ กรุณาตรวจสอบรหัสสมาชิกและรหัสผ่าน', NOT_ALLOWED: 'บัญชีหรือคำขอนี้ยังไม่ได้รับสิทธิ์ กรุณาติดต่อผู้ดูแลระบบ', SERVICE_NOT_READY: 'ระบบยืนยันตัวตนยังไม่พร้อมใช้งาน กรุณาลองใหม่ภายหลัง' });
 function message(text) { el('message').textContent = text; el('message').hidden = false; el('message').focus(); }
-function clearPasswords() { document.querySelectorAll('input[type=password], input[data-was-password]').forEach(input => { input.value = ''; input.type = 'password'; }); document.querySelectorAll('[data-toggle]').forEach(button => { button.setAttribute('aria-pressed', 'false'); button.setAttribute('aria-label', 'แสดงรหัสผ่าน'); }); }
+function updateEye(button, visible) {
+  button.setAttribute('aria-pressed', String(visible));
+  button.setAttribute('aria-label', visible ? 'ซ่อนรหัสผ่าน' : 'แสดงรหัสผ่าน');
+  button.setAttribute('aria-controls', button.dataset.toggle);
+  button.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>${visible ? '<path d="M3 3 21 21"/>' : ''}</svg>`;
+}
+function clearPasswords() { document.querySelectorAll('input[type=password], input[data-was-password]').forEach(input => { input.value = ''; input.type = 'password'; }); document.querySelectorAll('[data-toggle]').forEach(button => { updateEye(button, false); }); }
 function step(index) { document.querySelectorAll('.steps li').forEach((li, i) => { if (i === index) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current'); }); }
-function show(name, isPreview = false) {
+function show(name, isPreview = false, focus = true) {
+  demo.reset();
+  if (name === 'first-time') { lineVerified = false; renderDemo(); }
   preview = isPreview;
   clearPasswords();
   panels.forEach(panel => { el(`${panel}-panel`).hidden = panel !== name; });
   el('message').hidden = true;
   el('preview-note').hidden = !preview;
-  document.querySelectorAll('[data-go]').forEach(button => { if (button.closest('.tabs')) { if (button.dataset.go === (name === 'password' ? 'password' : 'login') && button.textContent !== 'ครั้งแรก') button.setAttribute('aria-current', 'page'); else button.removeAttribute('aria-current'); } });
+  document.querySelectorAll('[data-go]').forEach(button => { if (button.closest('.tabs')) { if (button.dataset.go === (name === 'first-time' ? 'first-time' : name === 'password' ? 'password' : 'login')) button.setAttribute('aria-current', 'page'); else button.removeAttribute('aria-current'); } });
   if (name === 'password') { lineVerified = false; el('verify-step').hidden = false; el('new-password-form').hidden = true; el('password-done').hidden = true; el('new-password-caption').textContent = 'Server ยืนยัน LINE เดิมและสถานะ ACTIVE แล้ว'; step(0); }
   if (name === 'welcome' && preview) { el('session-member').textContent = 'ตัวอย่างหน้าจอ — ยังไม่ยืนยันบัญชี'; el('session-time').textContent = '—'; el('session-device').textContent = '—'; }
   el(`${name}-panel`).querySelector('h2').setAttribute('tabindex', '-1');
-  el(`${name}-panel`).querySelector('h2').focus({ preventScroll: true });
+  if (focus) el(`${name}-panel`).querySelector('h2').focus({ preventScroll: true });
 }
 async function run(action) {
   if (busy) return;
@@ -71,7 +81,7 @@ document.querySelectorAll('[data-preview]').forEach(button => button.addEventLis
 document.querySelectorAll('[data-toggle]').forEach(button => button.addEventListener('click', () => {
   const input = el(button.dataset.toggle); const visible = input.type === 'password';
   input.dataset.wasPassword = 'true'; input.type = visible ? 'text' : 'password';
-  button.setAttribute('aria-pressed', String(visible)); button.setAttribute('aria-label', visible ? 'ซ่อนรหัสผ่าน' : 'แสดงรหัสผ่าน');
+  updateEye(button, visible);
 }));
 for (const provider of ['line', 'google']) el(`${provider}-signin`).addEventListener('click', () => {
   const name = provider === 'line' ? 'LINE' : 'Google';
@@ -104,15 +114,16 @@ el('new-password-form').addEventListener('submit', event => {
 async function initialize() {
   el('connection-note').textContent = loginConfig.apiBase ? 'ระบบจะตรวจสอบบัญชีและสิทธิ์ผ่าน Server' : 'อยู่ระหว่างเตรียมเชื่อม API · ยังไม่เปิดให้เข้าสู่ระบบจริง';
   const route = location.hash === '#password' ? 'password' : 'login';
-  show(route);
+  show(route, false, false);
   const review = new URLSearchParams(location.search).get('review');
-  if (panels.includes(review)) { document.body.classList.add('review-sheet'); show(review, true); return; }
+  if (panels.includes(review)) { document.body.classList.add('review-sheet'); show(review, true, false); return; }
   if (!loginConfig.apiBase) return;
   await run(async () => {
     if (route === 'password') { const status = await api.passwordStatus(); if (status.verified === true) { lineVerified = true; el('verify-step').hidden = true; el('new-password-form').hidden = false; step(1); } }
     else renderSession(await checkedSession());
   });
 }
+document.querySelectorAll('[data-toggle]').forEach(button => updateEye(button, false));
 initialize();
 window.addEventListener('pageshow', event => { if (event.persisted) initialize(); });
 el('preview-password-fields').addEventListener('click', () => {
@@ -131,3 +142,25 @@ document.querySelectorAll('input').forEach(input => {
   input.addEventListener('input', () => { input.setCustomValidity(''); input.removeAttribute('aria-invalid'); });
 });
 document.addEventListener('visibilitychange', () => { if (document.hidden) clearPasswords(); });
+
+function renderDemo() {
+  clearPasswords(); el('message').hidden = true;
+  const state = demo.snapshot();
+  document.querySelectorAll('[data-demo-stage]').forEach(node => { node.hidden = node.dataset.demoStage !== state.stage; });
+  document.querySelectorAll('[data-demo-member]').forEach(node => { node.textContent = state.member; });
+  el('demo-member').value = state.member;
+  el('demo-back').hidden = state.stage === 'intro';
+  el('demo-progress').textContent = `ขั้นตอนทดลอง ${['intro','member','line','verified','password','done'].indexOf(state.stage) + 1} / 6`;
+}
+function demoAction(action) {
+  try { action(); renderDemo(); } catch (error) { message(error.message); }
+}
+document.querySelectorAll('[data-demo-action]').forEach(button => button.addEventListener('click', () => demoAction(() => demo.move(button.dataset.demoAction))));
+el('demo-fill').addEventListener('click', () => { el('demo-member').value = 'DEMO0001'; el('demo-member').setCustomValidity(''); el('demo-member').removeAttribute('aria-invalid'); });
+el('demo-back').addEventListener('click', () => demoAction(() => demo.back()));
+el('demo-member-form').addEventListener('submit', event => { event.preventDefault(); demoAction(() => demo.selectMember(el('demo-member').value)); });
+el('demo-password-form').addEventListener('submit', event => {
+  event.preventDefault();
+  try { demo.complete(el('demo-password').value, el('demo-confirm').value); renderDemo(); }
+  catch (error) { clearPasswords(); message(error.message); }
+});
