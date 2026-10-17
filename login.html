@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>เข้าสู่ระบบ | Srikrung S-Kurve</title>
+  <link rel="stylesheet" href="assets/login.css">
+  <script type="module" src="assets/login.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <div class="intro"><span class="eyebrow">S-KURVE SIGNATURE</span><h1>บัญชีเดียว จัดการทุกบริการ</h1><p>สำหรับสมาชิก ACTIVE และผู้ดูแลระบบ</p></div>
+    <article class="card" aria-label="ระบบเข้าสู่ระบบกลาง">
+      <header class="brand"><div class="brand-row"><div><strong>Srikrung S-Kurve</strong><span>ศรีกรุงโบรคเกอร์</span></div><span class="shield" aria-hidden="true">♢</span></div><div class="tagline"><b>Your Business, One Account.</b><span>บัญชีเดียว จัดการทุกบริการ</span></div></header>
+      <nav class="tabs" aria-label="เมนูบัญชี"><button type="button" data-go="login" aria-current="page">เข้าสู่ระบบ</button><button type="button" data-go="password">ครั้งแรก</button><button type="button" data-go="password">ตั้งรหัส</button></nav>
+      <div class="body">
+        <p id="connection-note" class="connection" role="status">กำลังตรวจสอบการเชื่อมต่อ…</p>
+        <p id="preview-note" class="preview" hidden>ตัวอย่างหน้าจอเท่านั้น — ไม่ใช่สถานะ Login จริง</p>
+        <div id="message" class="message" role="status" aria-live="polite" tabindex="-1" hidden></div>
+
+        <section id="login-panel" aria-labelledby="login-title">
+          <h2 id="login-title">ยินดีต้อนรับกลับ</h2><p class="muted">เข้าสู่ระบบสำหรับสมาชิก ACTIVE และ Admin</p>
+          <form id="login-form">
+            <label for="member-id">รหัสสมาชิก</label><input id="member-id" name="username" autocomplete="username" placeholder="เช่น SK00001" maxlength="64" required>
+            <label for="password">รหัสผ่าน</label><div class="password-row"><input id="password" name="password" type="password" autocomplete="current-password" placeholder="กรอกรหัสผ่าน" required><button class="eye" type="button" data-toggle="password" aria-label="แสดงรหัสผ่าน" aria-pressed="false">◉</button></div>
+            <button class="text-link forgot" type="button" data-go="password">ลืมรหัสผ่าน?</button>
+            <button class="button primary" type="submit">เข้าสู่ระบบ <span aria-hidden="true">→</span></button>
+          </form>
+          <div class="divider">หรือ</div>
+          <button id="line-signin" class="button line federated" type="button"><span aria-hidden="true">LINE</span> เข้าสู่ระบบด้วย LINE</button>
+          <button id="google-signin" class="button google federated" type="button"><span class="google-g" aria-hidden="true">G</span> เข้าสู่ระบบด้วย Google</button>
+          <div class="first-time"><span>ยังไม่มีรหัสผ่าน?</span><button class="button outline" type="button" data-go="password">เริ่มใช้งานครั้งแรก</button></div>
+        </section>
+
+        <section id="welcome-panel" aria-labelledby="welcome-title" hidden>
+          <div class="notice blue"><span class="notice-icon" aria-hidden="true">✓</span><div><h2 id="welcome-title">ยินดีต้อนรับกลับ!</h2><p>คุณต้องการเข้าสู่ระบบจัดการ<br>Srikrung S-Kurve ใช่หรือไม่?</p></div></div>
+          <dl class="session-details"><div><dt>บัญชีสมาชิก</dt><dd id="session-member">—</dd></div><div><dt>เข้าสู่ระบบล่าสุด</dt><dd id="session-time">—</dd></div><div><dt>อุปกรณ์</dt><dd id="session-device">—</dd></div></dl>
+          <button id="continue-button" class="button primary" type="button">ตกลง เข้าสู่ระบบ <span aria-hidden="true">→</span></button>
+          <button id="switch-account" class="button outline full" type="button">ไม่ใช่ฉัน (เข้าสู่ระบบด้วยรหัสผ่าน)</button>
+          <aside class="info">ⓘ <span>หากไม่ใช่อุปกรณ์ของคุณ เพื่อความปลอดภัย กรุณาเลือกเข้าสู่ระบบด้วยรหัสสมาชิกและรหัสผ่าน</span></aside>
+        </section>
+
+        <section id="expired-panel" aria-labelledby="expired-title" hidden>
+          <div class="notice red"><span class="notice-icon" aria-hidden="true">!</span><div><h2 id="expired-title">กรุณายืนยันตัวตนอีกครั้ง</h2><p>การเข้าสู่ระบบหมดอายุแล้ว<br>กรุณากรอกรหัสผ่านเพื่อเข้าสู่ระบบอีกครั้ง</p></div></div>
+          <form id="expired-form">
+            <label for="expired-member">รหัสสมาชิก</label><input id="expired-member" name="username" autocomplete="username" placeholder="เช่น SK00001" maxlength="64" required>
+            <label for="expired-password">รหัสผ่าน</label><div class="password-row"><input id="expired-password" name="password" type="password" autocomplete="current-password" placeholder="กรอกรหัสผ่าน" required><button class="eye" type="button" data-toggle="expired-password" aria-label="แสดงรหัสผ่าน" aria-pressed="false">◉</button></div>
+            <button class="text-link forgot" type="button" data-go="password">ลืมรหัสผ่าน?</button><button class="button danger" type="submit">เข้าสู่ระบบอีกครั้ง <span aria-hidden="true">→</span></button>
+          </form>
+          <aside class="info">♢ <span><b>เพื่อความปลอดภัย</b><br>ระบบจะตรวจสอบสถานะและสิทธิ์ทุกครั้งที่คุณเข้าสู่ระบบ</span></aside>
+        </section>
+
+        <section id="password-panel" aria-labelledby="password-title" hidden>
+          <h2 id="password-title">ตั้งหรือเปลี่ยนรหัสผ่าน</h2>
+          <ol class="steps" aria-label="ขั้นตอนตั้งรหัสผ่าน"><li aria-current="step"><b>1</b>ยืนยันตัวตน</li><li><b>2</b>ตั้งรหัสผ่าน</li><li><b>3</b>เสร็จสิ้น</li></ol>
+          <div id="verify-step"><form id="line-form"><label for="line-member">รหัสสมาชิก ACTIVE</label><input id="line-member" name="username" autocomplete="username" placeholder="เช่น SK00001" maxlength="64" required><div class="line-box"><span class="line-logo" aria-hidden="true">LINE</span><h3>ยืนยันตัวตนผ่าน LINE</h3><p>ระบบจะตรวจสอบ LINE เดิมที่ผูกกับรหัสสมาชิก ACTIVE ของคุณ</p><button class="button line" type="submit">ดำเนินการผ่าน LINE <span aria-hidden="true">→</span></button></div></form><aside class="info">ⓘ <span><b>หมายเหตุ</b><br>ใช้ LINE ที่ผูกกับรหัสสมาชิกเท่านั้น หลังยืนยันตัวตนแล้วจึงตั้งรหัสผ่านใหม่ได้ หากมีปัญหา กรุณาติดต่อผู้ดูแลระบบ</span></aside></div>
+          <form id="new-password-form" hidden><p id="new-password-caption" class="muted">Server ยืนยัน LINE เดิมและสถานะ ACTIVE แล้ว</p><label for="new-password">รหัสผ่านใหม่</label><div class="password-row"><input id="new-password" type="password" autocomplete="new-password" minlength="15" maxlength="128" required aria-describedby="password-help"><button class="eye" type="button" data-toggle="new-password" aria-label="แสดงรหัสผ่าน" aria-pressed="false">◉</button></div><p id="password-help" class="muted">ใช้รหัสผ่าน 15–128 ตัวอักษร</p><label for="confirm-password">ยืนยันรหัสผ่านใหม่</label><input id="confirm-password" type="password" autocomplete="new-password" minlength="15" maxlength="128" required><button class="button primary spaced" type="submit">บันทึกรหัสผ่านใหม่</button></form>
+          <div id="password-done" hidden><div class="notice blue"><span class="notice-icon">✓</span><div><h3>ตั้งรหัสผ่านเรียบร้อยแล้ว</h3><p>กรุณาเข้าสู่ระบบด้วยรหัสผ่านใหม่</p></div></div><button type="button" class="button primary" data-go="login">กลับไปเข้าสู่ระบบ</button></div>
+          <button class="text-link back" type="button" data-go="login">← กลับไปเข้าสู่ระบบ</button>
+        </section>
+      </div>
+      <footer>♙ &nbsp; Secure Access · Srikrung S-Kurve © 2026</footer>
+    </article>
+    <details class="preview-tools"><summary>ดูตัวอย่างหน้าจอสำหรับตรวจงาน</summary><p>ใช้ตรวจรูปแบบเท่านั้น ไม่มีการสร้าง Session หรือยืนยันตัวตน</p><div><button type="button" data-preview="login">1 · Login</button><button type="button" data-preview="welcome">2 · สีฟ้า</button><button type="button" data-preview="expired">3 · สีแดง</button><button type="button" data-preview="password">4 · ตั้งรหัส</button><button id="preview-password-fields" type="button">ตรวจช่องตั้งรหัสผ่าน (ไม่บันทึก)</button></div></details>
+  </main>
+</body>
+</html>

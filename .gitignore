@@ -1,0 +1,7 @@
+node_modules/
+preview-output/
+staging-output/
+.dev.vars*
+.env*
+.wrangler/
+*.log
