@@ -1,0 +1,15 @@
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { resolve } from 'node:path';
+const root = new URL('../', import.meta.url);
+const read = path => readFile(new URL(path, root), 'utf8');
+const target = resolve(process.argv[2] || 'preview-output');
+await mkdir(target, { recursive: true });
+let html = await read('login.html');
+const css = (await read('assets/login.css')).replace(/^@import[^;]+;\s*/u, '');
+const modules = await Promise.all(['assets/login-config.js', 'assets/login-api.mjs', 'assets/login-validation.mjs', 'assets/login.js'].map(read));
+const script = modules.map(text => text.replace(/^import .*;\r?\n/gmu, '').replace(/^export /gmu, '')).join('\n');
+html = html.replace('<link rel="stylesheet" href="assets/login.css">', `<style>${css}</style>`).replace('<script type="module" src="assets/login.js"></script>', `<script type="module">${script.replace(/<\/script/giu, '<\\/script')}</script>`);
+await writeFile(resolve(target, 'login-standalone.html'), html, 'utf8');
+const review = (await read('login-review.html')).replaceAll('login.html', 'login-standalone.html');
+await writeFile(resolve(target, 'login-review.html'), review, 'utf8');
+console.log('Built standalone Login and four-screen review (API remains disabled).');
