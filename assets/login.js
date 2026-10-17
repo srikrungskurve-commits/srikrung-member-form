@@ -1,7 +1,7 @@
 import { createFirstTimeDemo } from './first-time-demo.mjs';
 import { loginConfig } from './login-config.js';
 import { AuthError, createAuthApi } from './login-api.mjs';
-import { memberError, newPasswordError } from './login-validation.mjs';
+import { memberError, newPasswordError, memberIdFromSearch } from './login-validation.mjs';
 const api = createAuthApi(loginConfig);
 // Sign-in providers are deliberately not wired to an unverified account-linking flow.
 // Supply an approved provider adapter here only after server-side linking is ready.
@@ -124,6 +124,9 @@ async function initialize() {
   });
 }
 document.querySelectorAll('[data-toggle]').forEach(button => updateEye(button, false));
+// Prefill once on page load; tab changes never overwrite the user's edits.
+// Do not copy this untrusted hint into LINE, demo, session or account details.
+el('member-id').value = memberIdFromSearch(location.search);
 initialize();
 window.addEventListener('pageshow', event => { if (event.persisted) initialize(); });
 el('preview-password-fields').addEventListener('click', () => {

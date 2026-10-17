@@ -1,4 +1,10 @@
 // Client validation improves feedback; the real server must repeat all checks.
+// A URL value is an editable form hint only, never an authenticated identity.
+export function memberIdFromSearch(search) {
+  const values = new URLSearchParams(search).getAll('member_id');
+  if (values.length !== 1 || !/^[A-Za-z0-9_-]{1,64}$/.test(values[0])) return '';
+  return values[0];
+}
 export function memberError(value) {
   if (typeof value !== 'string' || !value.trim()) return 'กรุณากรอกรหัสสมาชิก';
   const member = value.trim();
