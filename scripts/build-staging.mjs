@@ -3,7 +3,7 @@ import { resolve, dirname } from 'node:path';
 const root = new URL('../', import.meta.url);
 const target = resolve(process.argv[2] || 'staging-output');
 // Explicit allowlist: never upload the repository root or legacy form webhooks.
-const files = ['login.html', 'login-review.html', 'assets/login.css', 'assets/login.js', 'assets/login-api.mjs', 'assets/login-config.js', 'assets/login-validation.mjs'];
+const files = ['login.html', 'login-review.html', 'assets/login.css', 'assets/login.js', 'assets/login-api.mjs', 'assets/login-config.js', 'assets/login-validation.mjs', 'assets/first-time-demo.mjs'];
 const config = await readFile(new URL('assets/login-config.js', root), 'utf8');
 if (!/apiBase:\s*null/.test(config)) throw Error('Staging UI preview must keep real authentication disabled.');
 for (const file of files) { const to = resolve(target, file); await mkdir(dirname(to), { recursive: true }); await copyFile(new URL(file, root), to); }

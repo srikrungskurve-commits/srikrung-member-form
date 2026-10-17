@@ -6,7 +6,7 @@ const target = resolve(process.argv[2] || 'preview-output');
 await mkdir(target, { recursive: true });
 let html = await read('login.html');
 const css = (await read('assets/login.css')).replace(/^@import[^;]+;\s*/u, '');
-const modules = await Promise.all(['assets/login-config.js', 'assets/login-api.mjs', 'assets/login-validation.mjs', 'assets/login.js'].map(read));
+const modules = await Promise.all(['assets/login-config.js', 'assets/login-api.mjs', 'assets/login-validation.mjs', 'assets/first-time-demo.mjs', 'assets/login.js'].map(read));
 const script = modules.map(text => text.replace(/^import .*;\r?\n/gmu, '').replace(/^export /gmu, '')).join('\n');
 html = html.replace('<link rel="stylesheet" href="assets/login.css">', `<style>${css}</style>`).replace('<script type="module" src="assets/login.js"></script>', `<script type="module">${script.replace(/<\/script/giu, '<\\/script')}</script>`);
 await writeFile(resolve(target, 'login-standalone.html'), html, 'utf8');
