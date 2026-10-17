@@ -13,7 +13,7 @@
     <div class="intro"><span class="eyebrow">S-KURVE SIGNATURE</span><h1>บัญชีเดียว จัดการทุกบริการ</h1><p>สำหรับสมาชิก ACTIVE และผู้ดูแลระบบ</p></div>
     <article class="card" aria-label="ระบบเข้าสู่ระบบกลาง">
       <header class="brand"><div class="brand-row"><div><strong>Srikrung S-Kurve</strong><span>ศรีกรุงโบรคเกอร์</span></div><span class="shield" aria-hidden="true">♢</span></div><div class="tagline"><b>Your Business, One Account.</b><span>บัญชีเดียว จัดการทุกบริการ</span></div></header>
-      <nav class="tabs" aria-label="เมนูบัญชี"><button type="button" data-go="login" aria-current="page">เข้าสู่ระบบ</button><button type="button" data-go="password">ครั้งแรก</button><button type="button" data-go="password">ตั้งรหัส</button></nav>
+      <nav class="tabs" aria-label="เมนูบัญชี"><button type="button" data-go="login" aria-current="page">เข้าสู่ระบบ</button><button type="button" data-go="first-time">ครั้งแรก</button><button type="button" data-go="password">ตั้งรหัส</button></nav>
       <div class="body">
         <p id="connection-note" class="connection" role="status">กำลังตรวจสอบการเชื่อมต่อ…</p>
         <p id="preview-note" class="preview" hidden>ตัวอย่างหน้าจอเท่านั้น — ไม่ใช่สถานะ Login จริง</p>
@@ -30,7 +30,7 @@
           <div class="divider">หรือ</div>
           <button id="line-signin" class="button line federated" type="button"><span aria-hidden="true">LINE</span> เข้าสู่ระบบด้วย LINE</button>
           <button id="google-signin" class="button google federated" type="button"><span class="google-g" aria-hidden="true">G</span> เข้าสู่ระบบด้วย Google</button>
-          <div class="first-time"><span>ยังไม่มีรหัสผ่าน?</span><button class="button outline" type="button" data-go="password">เริ่มใช้งานครั้งแรก</button></div>
+          <div class="first-time"><span>ยังไม่มีรหัสผ่าน?</span><button class="button outline" type="button" data-go="first-time">เริ่มใช้งานครั้งแรก</button></div>
         </section>
 
         <section id="welcome-panel" aria-labelledby="welcome-title" hidden>
@@ -51,6 +51,15 @@
           <aside class="info">♢ <span><b>เพื่อความปลอดภัย</b><br>ระบบจะตรวจสอบสถานะและสิทธิ์ทุกครั้งที่คุณเข้าสู่ระบบ</span></aside>
         </section>
 
+<section id="first-time-panel" aria-labelledby="first-time-title" hidden>
+<h2 id="first-time-title">ตั้งรหัสผ่านครั้งแรก</h2><p class="demo-banner">โหมดทดลอง — ยังไม่เชื่อมระบบยืนยันตัวตนจริง</p><p class="muted">ใช้ข้อมูลและรหัสผ่านตัวอย่างเท่านั้น ไม่มีการส่งหรือบันทึกข้อมูล และไม่ให้สิทธิ์เข้าสู่ระบบจริง</p><p id="demo-progress" role="status"></p>
+<div data-demo-stage="intro"><div class="line-box"><h3>เริ่มใช้งานครั้งแรก</h3><p>ทดลองกรอกสมาชิก ยืนยัน LINE แบบจำลอง และตั้งรหัสผ่านตัวอย่าง</p><button type="button" class="button primary" data-demo-action="start">เริ่มทดลองตั้งรหัสผ่าน</button></div></div>
+<form id="demo-member-form" data-demo-stage="member" hidden><label for="demo-member">รหัสสมาชิกตัวอย่าง</label><input id="demo-member" autocomplete="off" maxlength="16" placeholder="DEMO0001" required><p class="muted">ใช้เฉพาะ DEMO0001 หรือ DEMO0002</p><button type="button" class="button outline full" id="demo-fill">ใช้รหัสตัวอย่าง DEMO0001</button><button type="submit" class="button primary spaced">ดำเนินการต่อ</button></form>
+<div data-demo-stage="line" hidden><div class="line-box"><h3>ยืนยันผ่าน LINE แบบจำลอง</h3><p>สมาชิกตัวอย่าง <strong data-demo-member></strong></p><p>ไม่เปิด LINE และไม่ตรวจสอบบัญชีจริง</p><button class="button line" type="button" data-demo-action="verify">ทดลองยืนยันตัวตนผ่าน LINE</button></div><button type="button" class="text-link back" data-demo-action="edit">แก้ไขรหัสสมาชิก</button></div>
+<div data-demo-stage="verified" hidden><div class="notice blue"><div><h3>ยืนยันตัวตนจำลองแล้ว</h3><p>ตัวอย่าง <strong data-demo-member></strong> · ยังไม่ได้ยืนยัน LINE จริง</p></div></div><button class="button primary spaced" type="button" data-demo-action="password">ไปตั้งรหัสผ่านตัวอย่าง</button></div>
+<form id="demo-password-form" data-demo-stage="password" autocomplete="off" hidden><p class="muted">สำหรับ <strong data-demo-member></strong> · อย่าใช้รหัสผ่านจริง</p><label for="demo-password">รหัสผ่านตัวอย่างใหม่</label><div class="password-row"><input id="demo-password" type="password" autocomplete="off" minlength="15" maxlength="128" required><button class="eye" type="button" data-toggle="demo-password" aria-label="แสดงรหัสผ่าน" aria-pressed="false"></button></div><p class="muted">ใช้ 15–128 ตัวอักษร เช่น Demo-only-passphrase-2026</p><label for="demo-confirm">ยืนยันรหัสผ่านตัวอย่าง</label><div class="password-row"><input id="demo-confirm" type="password" autocomplete="off" minlength="15" maxlength="128" required><button class="eye" type="button" data-toggle="demo-confirm" aria-label="แสดงรหัสผ่าน" aria-pressed="false"></button></div><button class="button primary spaced" type="submit">ทดลองตั้งรหัสผ่าน</button></form>
+<div data-demo-stage="done" hidden><div class="notice blue"><div><h3>ทดลองตั้งรหัสผ่านสำเร็จ</h3><p>สำหรับ <strong data-demo-member></strong> ไม่มีการบันทึกรหัสผ่าน ไม่มี Session และยังเข้าสู่ระบบจริงไม่ได้</p></div></div><button type="button" class="button primary spaced" data-demo-action="restart">ทดลองใหม่</button></div>
+<button id="demo-back" class="text-link back" type="button">← ย้อนกลับขั้นตอนก่อนหน้า</button><button class="text-link back" type="button" data-go="login">กลับหน้าเข้าสู่ระบบ</button></section>
         <section id="password-panel" aria-labelledby="password-title" hidden>
           <h2 id="password-title">ตั้งหรือเปลี่ยนรหัสผ่าน</h2>
           <ol class="steps" aria-label="ขั้นตอนตั้งรหัสผ่าน"><li aria-current="step"><b>1</b>ยืนยันตัวตน</li><li><b>2</b>ตั้งรหัสผ่าน</li><li><b>3</b>เสร็จสิ้น</li></ol>

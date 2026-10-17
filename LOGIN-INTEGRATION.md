@@ -51,3 +51,7 @@ Review query `?review=login|welcome|expired|password` only selects a visibly lab
 Unconfigured requests display a Thai message and do not send credentials. Malformed JSON, unsupported Session roles/non-ACTIVE responses, 401/403/429/503 responses, unsafe LINE origins and network failures fail closed. On every restored page (`pageshow`), real Session initialization is repeated when configured. Passwords are cleared on view changes, submission completion and when the document becomes hidden. Inputs support autocomplete, focus indicators, labels, required validation in Thai and keyboard use.
 
 The current delivery scope is front-end only, per the latest user instruction to defer backend/Make/LINE integration. No Worker implementation, database changes, real account validation, LINE messages or publicly deployed preview is included. The review layouts are screenshots of actual running HTML/CSS, not evidence of an authenticated Session.
+
+
+## First-time demo (isolated UI)
+The First-time tab uses first-time-demo.mjs with DEMO0001/DEMO0002 only. It does not call the API, store passwords, create sessions, or change real LINE verification. Demo passwords are validated in memory and inputs cleared on navigation/completion/errors. Keep apiBase null for UI staging.
