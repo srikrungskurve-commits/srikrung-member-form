@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Srikrung S-Kurve | ฟอร์มข้อมูลติดต่อ</title>
+  <style>
+    :root{--accent:#13784f;--accent-dark:#075536;--tint:#e9f7ee;--field:#f1faf3;--outline:#9acfb0;--text:#183c2b;--button2:#16965f;--page:#e4f4e9}
+    *{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#e5f6e9 0%,#edf9f0 45%,#ddf2e5 100%);font-family:Tahoma,Arial,sans-serif;color:var(--text);min-height:100vh;display:grid;place-items:center;padding:22px 14px}.wrap{width:100%;max-width:510px}.brand{display:flex;align-items:center;gap:12px;text-align:left;margin:0 0 12px;padding:0 8px}.mark{display:inline-grid;place-items:center;background:var(--accent-dark);color:white;width:46px;height:46px;border-radius:12px;font-size:18px;font-weight:800;box-shadow:0 7px 20px #0755362a}.brand h1{font-size:18px;margin:0}.brand p{display:none}.card{background:rgba(255,255,255,.94);border:1px solid #a2d8b1;border-radius:25px;box-shadow:0 16px 38px #185d3520;overflow:hidden}.bar{height:0;background:linear-gradient(90deg,var(--accent-dark),var(--accent),var(--button2))}.content{padding:28px 25px}h2{font-size:29px;margin:2px 0 13px;line-height:1.35;color:#083d2a;letter-spacing:-.3px}.desc{font-size:15px;color:#344b42;line-height:1.85;margin:0 0 18px}.notice{font-size:12px;color:#41614c;background:#edf8ef;border:1px solid #c8e1cd;padding:11px 13px;border-radius:10px;line-height:1.65;margin-bottom:20px}.field{margin-bottom:14px;padding:5px 0 4px;border:0;border-radius:0;background:transparent;box-shadow:none}.field:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px #16825322}label{display:flex;align-items:center;gap:11px;font-size:17px;font-weight:800;margin-bottom:9px;color:#123b29}.number{display:inline-grid;place-items:center;flex:0 0 39px;height:39px;border-radius:50%;background:linear-gradient(145deg,#0a9b56,#005934);color:white;font-size:19px;box-shadow:0 2px 6px #0002}label em{font-style:normal;color:#d63243}label small{font-size:12px;font-weight:600;color:#586d7b}input{width:100%;padding:14px 13px;border:1.5px solid #cbd5d9;border-radius:13px;font-size:16px;outline:none;background:white;color:#1c3749}input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #16825322}input::placeholder{color:#718694}.hint{font-size:12px;color:#4e6879;margin:8px 0 0 2px}button{width:100%;background:linear-gradient(105deg,#12a85a,#006d3e);color:#fff;border:0;border-radius:12px;padding:17px;font-size:17px;font-weight:800;cursor:pointer}button:focus-visible{outline:3px solid #f4ac37;outline-offset:3px}.privacy{font-size:12px;color:#536f7f;text-align:center;line-height:1.8;margin-top:17px}.footer{text-align:center;font-size:12px;color:#597788;margin-top:17px}.success{display:none;text-align:center;padding:22px 0}.success .icon{font-size:44px;color:#16a36d}.success p{font-size:16px;color:#345344;line-height:1.9}.success h2{font-size:26px}.success-note{font-size:12px;line-height:1.7;color:#765921;background:#fff7df;border:1px solid #f1d99b;padding:12px;border-radius:12px;margin:20px 0}.back-btn{margin-top:12px;background:#e8f4ec;color:#075536;border:1px solid #b8d7c3}.success #chat{background:linear-gradient(105deg,#12a85a,#006d3e)}#success:target{display:block!important}body:has(#success:target) #entry{display:none!important}body:has(#entry:target) #success{display:none!important}#entry:target{display:block!important}@media(max-width:400px){.content{padding:23px 15px}.field{padding:5px 0}.brand h1{font-size:22px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="brand"><div class="mark">SK</div><h1>SRIKRUNG S-Kurve</h1><p>ยินดีต้อนรับผู้ติดตาม LINE OA</p></header>
+    <section class="card"><div class="bar"></div><div class="content">
+      <div id="entry">
+        <h2>🎁 ลงทะเบียนรับสิทธิประโยชน์</h2>
+        <p class="desc">✨ เพียงกรอกชื่อและเบอร์โทร เพื่อเริ่มรับข่าวสาร บริการดี ๆ และค้นหาสิทธิพิเศษที่เหมาะกับคุณ</p>
+        <div class="notice">💙 กรอกง่าย ไม่บังคับ ใช้เวลาเพียงครู่เดียว</div>
+        <form id="form" novalidate>
+          <div class="field"><label for="name"><span class="number">1</span><span>ชื่อ–นามสกุล <em>*</em></span></label><input id="name" name="full_name" placeholder="กรอกชื่อ–นามสกุล" required maxlength="120"></div>
+          <div class="field"><label for="phone"><span class="number">2</span><span>เบอร์โทรศัพท์ <em>*</em></span></label><input id="phone" name="phone" type="tel" pattern="0[0-9]{9}" title="กรอกเบอร์โทร 10 หลัก เริ่มด้วย 0" inputmode="numeric" maxlength="10" placeholder="กรอกเบอร์โทรศัพท์" required><p class="hint">ตัวเลข 10 หลัก ไม่ต้องใส่ขีด</p></div>
+          <div class="field"><label for="referrer"><span class="number">3</span><span>ชื่อผู้แนะนำ <small>(ถ้ามี)</small></span></label><input id="referrer" name="referrer_name" placeholder="ไม่มีก็เว้นว่างได้" maxlength="120"><p class="hint">ช่องนี้ไม่บังคับกรอก</p></div>
+          <p id="form-error" role="alert" aria-live="polite" style="display:none;background:#fff0ee;border:1px solid #e8a39b;color:#9b2c20;padding:12px;border-radius:10px;font-size:14px"></p>
+          <button type="submit" id="submit-btn">✨ บันทึกข้อมูล รับสิทธิประโยชน์</button>
+        </form>
+        <p class="privacy">🧪 ตัวอย่างฟอร์ม ยังไม่บันทึกข้อมูลจริง<br>การกรอกฟอร์มไม่ทำให้สถานะ ACTIVE อัตโนมัติ</p>
+      </div>
+      <div class="success" id="success" tabindex="-1">
+        <div class="icon">🎉</div><h2>🎉 ยินดีด้วย! บันทึกข้อมูลสำเร็จ</h2>
+        <p>✨ ยินดีต้อนรับสู่ Srikrung S-Kurve<br>🎁 สิทธิพิเศษและบริการดี ๆ รอคุณอยู่!<br><br>💬 ทักแชต พิมพ์สอบถาม หรือพูดคุยกับเราได้เลย เพื่อค้นหาสิทธิประโยชน์ที่เหมาะกับคุณ<br><br>💙 เรายินดีดูแลคุณครับ</p>
+        <div class="success-note">🧪 นี่เป็นการทดลองแสดงผล ยังไม่ได้บันทึกข้อมูลหรือส่งข้อความผ่าน LINE จริง</div>
+        <a href="#success" id="chat" style="display:block;text-align:center;text-decoration:none;background:#075536;color:white;padding:15px;border-radius:12px">💬 ทักแชตกับเราเลย</a>
+        <a href="#entry" class="back-btn" style="display:block;text-align:center;text-decoration:none;margin-top:12px;padding:14px">↩ ทดลองกรอกอีกครั้ง</a>
+      </div>
+    </div></section>
+    <div class="footer">© Srikrung S-Kurve • ตัวอย่างหน้าฟอร์ม</div>
+  </main>
+  <script>
+    const form = document.getElementById('form');
+    const error = document.getElementById('form-error');
+    const nameInput = document.getElementById('name');
+    const phoneInput = document.getElementById('phone');
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      error.style.display = 'none';
+      if (!nameInput.value.trim() || !phoneInput.value.trim()) {
+        error.textContent = 'กรุณากรอกชื่อ–นามสกุลและเบอร์โทรศัพท์ให้ครบถ้วน';
+        error.style.display = 'block';
+        (!nameInput.value.trim() ? nameInput : phoneInput).focus();
+        return;
+      }
+      if (!/^0[0-9]{9}$/.test(phoneInput.value)) {
+        error.textContent = 'กรุณากรอกเบอร์โทรศัพท์ 10 หลัก โดยขึ้นต้นด้วย 0 และไม่ต้องใส่ขีด';
+        error.style.display = 'block';
+        phoneInput.focus();
+        return;
+      }
+      window.location.hash = 'success';
+      document.getElementById('success').focus();
+    });
+  </script>
+</body>
+</html>
