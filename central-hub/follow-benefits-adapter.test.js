@@ -1,0 +1,5 @@
+import test from "node:test";import assert from "node:assert/strict";
+import {upsertLineCustomer,updateBenefits} from "./follow-benefits-adapter.js";
+test("follow twice reuses record",()=>{const db=[];const a=upsertLineCustomer(db,"U_TEST_123");const b=upsertLineCustomer(db,"U_TEST_123");assert.equal(a.record,b.record);assert.equal(db.length,1)});
+test("benefit edits retain membership and referrer",()=>{const db=[{line_user_id:"U_TEST_123",member_id:"AM00010",member_status:"ACTIVE",referrer_member_id:"CH0001",line_follow_referrer_id:"OLD"}];updateBenefits(db,"U_TEST_123","U_TEST_123",{full_name:"Name",phone:"0812345678"});assert.equal(db[0].member_status,"ACTIVE");assert.equal(db[0].referrer_member_id,"CH0001");assert.equal(db[0].line_follow_referrer_id,"OLD")});
+test("blocks unauthorized update and duplicate records",()=>{const db=[];upsertLineCustomer(db,"U_TEST_123");assert.throws(()=>updateBenefits(db,"U_TEST_123","U_OTHER_123",{full_name:"X",phone:"0812345678"}),/NOT_AUTHENTICATED/);db.push({...db[0]});assert.throws(()=>upsertLineCustomer(db,"U_TEST_123"),/DUPLICATE_LINE/)});
