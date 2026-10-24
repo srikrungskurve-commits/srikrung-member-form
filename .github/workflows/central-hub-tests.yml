@@ -1,0 +1,21 @@
+name: Central Hub staging tests
+on:
+  push:
+    branches: [feature/central-hub-demo-v1]
+    paths: ['central-hub/**', '.github/workflows/central-hub-tests.yml']
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: central-hub
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run unit tests without credentials or network calls
+        run: npm test
