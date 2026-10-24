@@ -15,10 +15,9 @@ export function updateBenefits(store,lineId,verifiedLineId,data) {
   if (matches.length !== 1) throw Error(matches.length?"DUPLICATE_LINE_REQUIRES_REVIEW":"CUSTOMER_NOT_FOUND");
   if(typeof data.full_name!=="string"||!data.full_name.trim()||typeof data.phone!=="string"||!/^0[0-9]{9}$/.test(data.phone)) throw Error("INVALID_BENEFITS_DATA");
   const r=matches[0];
+  if(data.line_follow_referrer_id!==undefined && data.line_follow_referrer_id!==null && data.line_follow_referrer_id!=="" && !/^[A-Za-z0-9_-]{1,64}$/.test(data.line_follow_referrer_id)) throw Error("INVALID_FOLLOW_REFERRER");
+  // Complete all validation before mutating the existing record.
   r.full_name=data.full_name.trim();r.phone=data.phone;
-  if(data.line_follow_referrer_id!==undefined && data.line_follow_referrer_id!==null && data.line_follow_referrer_id!=="") {
-    if(!/^[A-Za-z0-9_-]{1,64}$/.test(data.line_follow_referrer_id))throw Error("INVALID_FOLLOW_REFERRER");
-    r.line_follow_referrer_id=data.line_follow_referrer_id;
-  }
+  if(data.line_follow_referrer_id!==undefined && data.line_follow_referrer_id!==null && data.line_follow_referrer_id!=="") r.line_follow_referrer_id=data.line_follow_referrer_id;
   return r; // do not alter member_id, status or membership referrer
 }
