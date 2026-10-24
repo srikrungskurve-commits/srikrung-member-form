@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SRIKRUNG CENTRAL HUB — DEMO V1</title>
+<style>
+:root{font-family:Tahoma,Arial,sans-serif;color:#173a2c;background:#edf6f1}*{box-sizing:border-box}body{margin:0}main{max-width:950px;margin:auto;padding:24px 14px 65px}header{background:#07583d;color:white;border-radius:20px;padding:24px}header h1{margin:0 0 8px;font-size:25px}.badge{background:#fff2b8;color:#543e00;border-radius:8px;padding:5px 9px;font-weight:700;display:inline-block}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:15px;margin-top:18px}.card{background:white;border:1px solid #c8dfd2;border-radius:18px;padding:20px}h2{font-size:20px;margin:0 0 13px}button{background:#087b4e;color:white;border:0;border-radius:11px;padding:12px 15px;font-size:16px;cursor:pointer;margin:4px 5px 4px 0;min-height:44px}button.secondary{background:#e8f4ed;color:#0b5237;border:1px solid #a3c9b5}button:disabled{opacity:.5;cursor:not-allowed}input{padding:12px;border:1px solid #9db7a9;border-radius:9px;width:100%;font-size:16px;margin:6px 0 13px}label{font-weight:700}p{line-height:1.65}.muted{color:#63776b;font-size:13px}.hidden{display:none}.notice{background:#fff8de;border:1px solid #e9d595;padding:12px;border-radius:12px;margin-top:12px}#status{font-weight:bold;color:#07583d}ol{padding-left:22px}li{margin-bottom:7px}
+</style></head><body><main>
+<header><span class="badge">DEMO เท่านั้น • ไม่มี LINE/Login จริง</span><h1>🧩 SRIKRUNG CENTRAL HUB</h1><div>ตัวอย่างช่องเสียบจิ๊กซอว์: สองประตู → ตัวตนกลาง → บริการ</div></header>
+<div class="grid">
+<section class="card"><h2>① ประตู LINE Follow</h2><p>จำลองการรับ LINE User ID โดยไม่ถือว่าเข้าสู่ระบบสำเร็จ</p><label for="line">LINE User ID ทดสอบ</label><input id="line" value="U_DEMO_001"><button id="follow">เพิ่มเพื่อนจำลอง</button><p id="followResult" aria-live="polite"></p></section>
+<section class="card"><h2>② ประตู Central Login</h2><p>จำลองการยืนยันตัวตนด้วยบัญชีทดสอบเท่านั้น</p><label for="account">บัญชีทดสอบ</label><input id="account" value="DEMO-001"><button id="login">เข้าสู่ระบบจำลอง</button><button id="logout" class="secondary">ออกจากระบบ</button><p id="loginResult" aria-live="polite"></p></section>
+</div>
+<section class="card" style="margin-top:16px"><h2>③ ตัวตนกลาง</h2><p id="status">ยังไม่เข้าสู่ระบบ</p><div id="person"></div><p class="muted">บัญชีเดียว: LINE Follow สร้างข้อมูลเบื้องต้น / Login เปิดสิทธิ์จำลอง; ในระบบจริงต้องพิสูจน์การผูกบัญชีฝั่งเซิร์ฟเวอร์</p></section>
+<section class="card" style="margin-top:16px"><h2>④ Central Dashboard / ช่องเสียบโมดูล</h2><div id="modules"></div><p class="muted">เพิ่มโมดูลผ่านรายการ Registry โดยไม่แก้ระบบ Login — ตัวอย่างนี้ยังไม่เปิดลิงก์ฟอร์มจริง</p></section>
+<section class="card hidden" id="formCard" style="margin-top:16px"><h2 id="formTitle"></h2><p id="formDesc"></p>
+<form id="profileForm"><label for="name">ชื่อ–นามสกุล</label><input id="name" required maxlength="120"><label for="phone">เบอร์โทร</label><input id="phone" pattern="0[0-9]{9}" inputmode="numeric" required maxlength="10"><label for="referrer">รหัสผู้แนะนำ (ถ้ามี)</label><input id="referrer" maxlength="64"><button type="submit">บันทึก / อัปเดต</button><button type="button" id="close" class="secondary">ปิด</button></form><p id="saved" aria-live="polite"></p></section>
+<section class="card" style="margin-top:16px"><h2>⑤ ประวัติการทดสอบ</h2><ol id="log"></ol><button id="reset" class="secondary">ล้างข้อมูล DEMO ในเบราว์เซอร์นี้</button><div class="notice">⚠️ ข้อมูลเก็บเฉพาะใน localStorage ของเบราว์เซอร์ ไม่ส่งไป Make.com, Cloudflare หรือ Data Store จริง ห้ามใช้ข้อมูลลูกค้าจริง</div></section>
+</main><script>
+(()=>{
+const KEY="sk-central-demo-v1";
+const defaultState=()=>({people:{},active:null,logs:[]});
+let state;try{state=JSON.parse(localStorage.getItem(KEY))||defaultState();if(!state.people||!Array.isArray(state.logs))state=defaultState()}catch{state=defaultState()}
+const $=id=>document.getElementById(id);
+const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
+const log=msg=>{state.logs.unshift(new Date().toLocaleString("th-TH")+": "+msg);state.logs=state.logs.slice(0,20);save()};
+const registry=[
+{id:"benefits",label:"🎁 รับสิทธิประโยชน์",desc:"บันทึก / แก้ไขข้อมูลติดต่อ"},
+{id:"member",label:"👤 สมัครสมาชิก (จำลอง)",desc:"เปิดข้อมูลเดิม / อัปเดต — ยังไม่สร้างรหัสสมาชิกจริง"},
+{id:"vehicle",label:"🚗 ข้อมูลรถยนต์",desc:"ช่องเสียบสำรอง: ยังไม่พร้อม",disabled:true},
+{id:"accident",label:"🛡️ ประกันอุบัติเหตุ",desc:"ช่องเสียบสำรอง: ยังไม่พร้อม",disabled:true}
+];
+function activePerson(){return state.active?state.people[state.active]:null}
+function render(){
+const person=activePerson();$("status").textContent=person?"เข้าสู่ระบบจำลองสำเร็จ • customer_id: "+person.id:"ยังไม่เข้าสู่ระบบ";
+$("person").textContent=person?"LINE ID: "+(person.line||"ยังไม่ผูก")+" • ข้อมูล: "+(person.profile?.name||"ยังไม่กรอก"):"";
+$("modules").replaceChildren();registry.forEach(m=>{const b=document.createElement("button");b.textContent=m.label;b.disabled=!person||m.disabled;b.title=m.desc;b.addEventListener("click",()=>openModule(m));$("modules").append(b)});
+$("log").replaceChildren();state.logs.forEach(entry=>{const li=document.createElement("li");li.textContent=entry;$("log").append(li)});
+}
+$("follow").addEventListener("click",()=>{const line=$("line").value.trim();if(!/^U[A-Za-z0-9_]{4,80}$/.test(line)){$("followResult").textContent="กรอก LINE User ID ทดสอบที่ขึ้นต้นด้วย U";return}
+let p=Object.values(state.people).find(x=>x.line===line);if(!p){p={id:"DEMO-001",line,profile:null};if(state.people[p.id]&&state.people[p.id].line!==line){$("followResult").textContent="พบตัวตนอื่นอยู่แล้ว — DEMO ไม่รวมบัญชีโดยอัตโนมัติ";return}state.people[p.id]=p;log("LINE Follow จำลอง: สร้าง "+p.id)}else log("LINE Follow จำลอง: พบตัวตนเดิม ไม่สร้างซ้ำ");
+$("followResult").textContent="รับ LINE User ID แล้ว (ยังไม่ Login) • "+p.id;save();render()});
+$("login").addEventListener("click",()=>{const id=$("account").value.trim();if(id!=="DEMO-001"){$("loginResult").textContent="ตัวอย่างรองรับเฉพาะ DEMO-001";return}
+if(!state.people[id])state.people[id]={id,line:null,profile:null};state.active=id;log("Login จำลอง: "+id);$("loginResult").textContent="เข้าใช้งาน DEMO สำเร็จ (ไม่ใช่การยืนยันตัวตนจริง)";render()});
+$("logout").addEventListener("click",()=>{state.active=null;$("formCard").classList.add("hidden");log("ออกจาก DEMO");render()});
+function openModule(m){const p=activePerson();if(!p)return;$("formCard").classList.remove("hidden");$("formTitle").textContent=m.label;$("formDesc").textContent=m.desc;$("formCard").dataset.module=m.id;$("name").value=p.profile?.name||"";$("phone").value=p.profile?.phone||"";$("referrer").value=p.profile?.referrer||"";$("saved").textContent=p.profile?"พบข้อมูลเดิมแล้ว แก้ไขได้":"ยังไม่มีข้อมูล เปิดช่องว่างให้กรอก";$("formCard").scrollIntoView({behavior:"smooth",block:"nearest"})}
+$("profileForm").addEventListener("submit",e=>{e.preventDefault();const p=activePerson();if(!p)return;const name=$("name").value.trim(),phone=$("phone").value.trim(),referrer=$("referrer").value.trim();if(!name||!/^0[0-9]{9}$/.test(phone)){$("saved").textContent="ตรวจสอบชื่อและเบอร์โทร 10 หลัก";return}const was=!!p.profile;p.profile={name,phone,referrer};log((was?"อัปเดต":"บันทึก")+"ข้อมูล "+p.id+" ผ่าน "+$("formCard").dataset.module);$("saved").textContent="บันทึก DEMO แล้ว — เปิดโมดูลเดิมอีกครั้งจะเห็นข้อมูลล่าสุด";render()});
+$("close").addEventListener("click",()=>$("formCard").classList.add("hidden"));
+$("reset").addEventListener("click",()=>{if(!confirm("ล้างข้อมูล DEMO ทั้งหมดในเบราว์เซอร์นี้?"))return;state=defaultState();save();$("formCard").classList.add("hidden");$("followResult").textContent="";$("loginResult").textContent="";render()});
+render();
+})();
+</script></body></html>
