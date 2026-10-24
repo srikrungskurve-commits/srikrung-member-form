@@ -17,6 +17,7 @@
 </main><script type="module">
 import {blankState,registerLine,createWebsiteCustomer,linkLineAfterVerifiedProof,activateMembership,saveForm,readForm} from "./identity-model.js";
 import {modules as registry} from "./module-registry.js";
+import {createMemberConnector} from "./member-connector.js";
 const STORAGE="sk-central-core-integrated-demo-v1";
 const $=id=>document.getElementById(id);
 let state;try{state=JSON.parse(localStorage.getItem(STORAGE))||blankState();if(!state.customers||!state.lineIndex||!state.forms||!state.members)state=blankState()}catch{state=blankState()}
@@ -81,7 +82,8 @@ $("logout").addEventListener("click",()=>{active=null;$("formCard").classList.ad
 function openMember(){
  if(!active)return;
  const c=state.customers[active];
- $("memberId").value=c.member_id||"AM00010";
+ const membership=createMemberConnector(state,active).getProfile();
+ $("memberId").value=membership.member_id||"AM00010";
  $("memberId").disabled=Boolean(c.member_id);
  $("memberRef").disabled=Boolean(c.member_id);
  $("memberForm").querySelector("button[type=submit]").disabled=Boolean(c.member_id);
@@ -93,7 +95,7 @@ $("memberForm").addEventListener("submit",e=>{
  e.preventDefault();if(!active)return;
  try{
   const id=$("memberId").value.trim().toUpperCase(),ref=$("memberRef").value.trim().toUpperCase();
-  activateMembership(state,active,id,ref);
+  createMemberConnector(state,active).registerMember({member_id:id,referrer_member_id:ref});
   record("สมัครสมาชิก DEMO สำเร็จ "+id+" → "+active);
   openMember();render();
  }catch(err){$("memberResult").textContent="ไม่อนุญาต: "+err.message}
@@ -104,8 +106,8 @@ function openModule(module){
  const key=module.id==="member-registration"?"member-profile":module.id;
  $("formCard").dataset.module=key;
  $("formTitle").textContent=module.label;
- $("formDesc").textContent=key==="member-profile"?"ทดลองอ่าน/แก้ไขข้อมูลสมาชิก โดยยังไม่สมัครสมาชิกจริง":"ข้อมูลรับสิทธิประโยชน์";
- const profile=readForm(state,active,active,key);
+ $("formDesc").textContent=key==="member-profile"?"ข้อมูลสมาชิก: ต้องสมัคร DEMO สำเร็จก่อนจึงแก้ไขได้":"ข้อมูลรับสิทธิประโยชน์";
+ const profile=key==="member-profile"?createMemberConnector(state,active).getProfile().details:readForm(state,active,active,key);
  $("name").value=profile?.name||"";
  $("phone").value=profile?.phone||"";
  $("referrer").value=profile?.referrer||"";
@@ -120,7 +122,7 @@ $("profileForm").addEventListener("submit",event=>{
  if(!name||!/^0[0-9]{9}$/.test(phone)){showMessage("saved","ตรวจสอบชื่อและเบอร์ 10 หลัก");return}
  try{
   const module=$("formCard").dataset.module;
-  const saved=saveForm(state,active,active,module,{name,phone,referrer});
+  const saved=module==="member-profile"?createMemberConnector(state,active).updateProfile({full_name:name,phone}).details:saveForm(state,active,active,module,{name,phone,referrer});
   record("บันทึก "+module+" เวอร์ชัน "+saved.version+" บัญชี "+active);
   showMessage("saved","สำเร็จ • เวอร์ชัน "+saved.version+" — เปิดใหม่เพื่อเรียกดูข้อมูลเดิม");
  }catch(err){showMessage("saved","บันทึกไม่ได้: "+err.message)}
