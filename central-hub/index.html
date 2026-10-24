@@ -13,14 +13,16 @@
 <section class="card" style="margin-top:16px"><h2>④ Central Dashboard / ช่องเสียบโมดูล</h2><div id="modules"></div><p class="muted">เพิ่มโมดูลผ่านรายการ Registry โดยไม่แก้ระบบ Login — ตัวอย่างนี้ยังไม่เปิดลิงก์ฟอร์มจริง</p></section>
 <section class="card hidden" id="formCard" style="margin-top:16px"><h2 id="formTitle"></h2><p id="formDesc"></p>
 <form id="profileForm"><label for="name">ชื่อ–นามสกุล</label><input id="name" required maxlength="120"><label for="phone">เบอร์โทร</label><input id="phone" pattern="0[0-9]{9}" inputmode="numeric" required maxlength="10"><label for="referrer">รหัสผู้แนะนำ (ถ้ามี)</label><input id="referrer" maxlength="64"><button type="submit">บันทึก / อัปเดต</button><button type="button" id="close" class="secondary">ปิด</button></form><p id="saved" aria-live="polite"></p></section>
-<section class="card" style="margin-top:16px"><h2>⑤ ประวัติการทดสอบ</h2><ol id="log"></ol><button id="reset" class="secondary">ล้างข้อมูล DEMO ในเบราว์เซอร์นี้</button><div class="notice">⚠️ ข้อมูลเก็บเฉพาะใน localStorage ของเบราว์เซอร์ ไม่ส่งไป Make.com, Cloudflare หรือ Data Store จริง ห้ามใช้ข้อมูลลูกค้าจริง</div></section>
+<section class="card hidden" id="memberCard" style="margin-top:16px"><h2>👤 ฟอร์มสมัครสมาชิก — จิ๊กซอว์ตัวแรก (DEMO)</h2><p>ใช้กติกาจากฟอร์มเดิม: ตรวจรหัสซ้ำและผู้แนะนำ ACTIVE ก่อนเปิดใช้งานสมาชิก</p><form id="memberForm"><label for="memberId">รหัสสมาชิกใหม่</label><input id="memberId" value="AM00010" required pattern="[A-Z]{2}[0-9]{4,10}"><label for="memberRef">รหัสผู้แนะนำ</label><input id="memberRef" value="CH0001" required><button type="submit">จำลองสมัครสมาชิก</button><button type="button" id="memberClose" class="secondary">ปิด</button></form><p id="memberResult" aria-live="polite"></p><p class="muted">รหัสผู้แนะนำทดสอบ CH0001 = ACTIVE • ข้อมูลทั้งหมดเป็น DEMO เท่านั้น</p></section><section class="card" style="margin-top:16px"><h2>⑤ ประวัติการทดสอบ</h2><ol id="log"></ol><button id="reset" class="secondary">ล้างข้อมูล DEMO ในเบราว์เซอร์นี้</button><div class="notice">⚠️ ข้อมูลเก็บเฉพาะใน localStorage ของเบราว์เซอร์ ไม่ส่งไป Make.com, Cloudflare หรือ Data Store จริง ห้ามใช้ข้อมูลลูกค้าจริง</div></section>
 </main><script type="module">
-import {blankState,registerLine,createWebsiteCustomer,linkLineAfterVerifiedProof,saveForm,readForm} from "./identity-model.js";
+import {blankState,registerLine,createWebsiteCustomer,linkLineAfterVerifiedProof,activateMembership,saveForm,readForm} from "./identity-model.js";
 import {modules as registry} from "./module-registry.js";
 const STORAGE="sk-central-core-integrated-demo-v1";
 const $=id=>document.getElementById(id);
-let state;try{state=JSON.parse(localStorage.getItem(STORAGE))||blankState();if(!state.customers||!state.lineIndex||!state.forms)state=blankState()}catch{state=blankState()}
+let state;try{state=JSON.parse(localStorage.getItem(STORAGE))||blankState();if(!state.customers||!state.lineIndex||!state.forms||!state.members)state=blankState()}catch{state=blankState()}
 let active=null;
+// Sample active referrer; it is not a real member or imported record.
+if(!state.members.CH0001)state.members.CH0001={customer_id:"DEMO-SEED",status:"ACTIVE"};
 function persist(){localStorage.setItem(STORAGE,JSON.stringify(state))}
 function record(message){state.events.push({type:"DEMO",message,time:new Date().toLocaleString("th-TH")});state.events=state.events.slice(-30);persist()}
 function render(){
@@ -33,7 +35,7 @@ function render(){
   button.textContent=m.label;
   button.disabled=!current||!m.enabled;
   button.title=m.enabled?"โมดูล DEMO": "ช่องเสียบสำหรับอนาคต";
-  button.addEventListener("click",()=>openModule(m));
+  button.addEventListener("click",()=>m.id==="member-registration"?openMember():openModule(m));
   $("modules").append(button);
  });
  $("log").replaceChildren();
@@ -75,7 +77,28 @@ $("verifiedLink").addEventListener("click",()=>{
  }catch(err){showMessage("loginResult","ผูกไม่ได้: "+err.message)}
  render();
 });
-$("logout").addEventListener("click",()=>{active=null;$("formCard").classList.add("hidden");record("ออกจากระบบจำลอง");render()});
+$("logout").addEventListener("click",()=>{active=null;$("formCard").classList.add("hidden");$("memberCard").classList.add("hidden");record("ออกจากระบบจำลอง");render()});
+function openMember(){
+ if(!active)return;
+ const c=state.customers[active];
+ $("memberId").value=c.member_id||"AM00010";
+ $("memberId").disabled=Boolean(c.member_id);
+ $("memberRef").disabled=Boolean(c.member_id);
+ $("memberForm").querySelector("button[type=submit]").disabled=Boolean(c.member_id);
+ $("memberResult").textContent=c.member_id?"สมัครแล้ว: "+c.member_id+" — สมัครซ้ำไม่ได้ เปิดโมดูลข้อมูลสมาชิกเพื่อดู/แก้ไขรายละเอียด":"ยังไม่สมัครสมาชิก • กรอกข้อมูลครั้งแรก";
+ $("memberCard").classList.remove("hidden");$("formCard").classList.add("hidden");
+ $("memberCard").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+$("memberForm").addEventListener("submit",e=>{
+ e.preventDefault();if(!active)return;
+ try{
+  const id=$("memberId").value.trim().toUpperCase(),ref=$("memberRef").value.trim().toUpperCase();
+  activateMembership(state,active,id,ref);
+  record("สมัครสมาชิก DEMO สำเร็จ "+id+" → "+active);
+  openMember();render();
+ }catch(err){$("memberResult").textContent="ไม่อนุญาต: "+err.message}
+});
+$("memberClose").addEventListener("click",()=>$("memberCard").classList.add("hidden"));
 function openModule(module){
  if(!active||!module.enabled)return;
  const key=module.id==="member-registration"?"member-profile":module.id;
@@ -87,7 +110,7 @@ function openModule(module){
  $("phone").value=profile?.phone||"";
  $("referrer").value=profile?.referrer||"";
  $("saved").textContent=profile?"พบข้อมูลเดิม เวอร์ชัน "+profile.version+" — แก้ไขได้":"ยังไม่มีข้อมูล เปิดฟอร์มครั้งแรก";
- $("formCard").classList.remove("hidden");
+ $("formCard").classList.remove("hidden");$("memberCard").classList.add("hidden");
  $("formCard").scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 $("profileForm").addEventListener("submit",event=>{
@@ -106,7 +129,7 @@ $("profileForm").addEventListener("submit",event=>{
 $("close").addEventListener("click",()=>$("formCard").classList.add("hidden"));
 $("reset").addEventListener("click",()=>{
  if(!confirm("ลบข้อมูลจำลองในเบราว์เซอร์นี้ทั้งหมด?"))return;
- state=blankState();active=null;persist();$("formCard").classList.add("hidden");
+ state=blankState();state.members.CH0001={customer_id:"DEMO-SEED",status:"ACTIVE"};active=null;persist();$("formCard").classList.add("hidden");$("memberCard").classList.add("hidden");
  showMessage("followResult","");showMessage("loginResult","");render();
 });
 render();
