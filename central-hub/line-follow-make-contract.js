@@ -14,11 +14,12 @@ export function buildFollowMakePayload({verifiedLineUserId, fullName, phone, dis
     line_display_name:String(displayName||""), line_follow_referrer_id:followReferrerId,
     submission_id:submissionId};
 }
-export function interpretFollowMakeResponse(httpStatus, body) {
+export function interpretFollowMakeResponse(httpStatus, body, expectedSubmissionId) {
   if (!body || typeof body !== "object" || Array.isArray(body))
     return {kind:"UNCONFIRMED", retryAutomatically:false};
   if (httpStatus === 200 && body.success === true && body.persisted === true &&
-      body.line_follow_status === "COMPLETED" && nonempty(body.submission_id))
+      body.line_follow_status === "COMPLETED" && nonempty(body.submission_id) &&
+      (!expectedSubmissionId || body.submission_id === expectedSubmissionId))
     return {kind:"PERSISTED",submissionId:body.submission_id,retryAutomatically:false};
   if (httpStatus === 200 && body.code === "LINE_FOLLOW_ALREADY_COMPLETED" && body.success === false)
     return {kind:"ALREADY_COMPLETED",retryAutomatically:false};
