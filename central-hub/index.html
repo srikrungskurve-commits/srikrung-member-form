@@ -7,44 +7,107 @@
 <header><span class="badge">DEMO เท่านั้น • ไม่มี LINE/Login จริง</span><h1>🧩 SRIKRUNG CENTRAL HUB</h1><div>ตัวอย่างช่องเสียบจิ๊กซอว์: สองประตู → ตัวตนกลาง → บริการ</div></header>
 <div class="grid">
 <section class="card"><h2>① ประตู LINE Follow</h2><p>จำลองการรับ LINE User ID โดยไม่ถือว่าเข้าสู่ระบบสำเร็จ</p><label for="line">LINE User ID ทดสอบ</label><input id="line" value="U_DEMO_001"><button id="follow">เพิ่มเพื่อนจำลอง</button><p id="followResult" aria-live="polite"></p></section>
-<section class="card"><h2>② ประตู Central Login</h2><p>จำลองการยืนยันตัวตนด้วยบัญชีทดสอบเท่านั้น</p><label for="account">บัญชีทดสอบ</label><input id="account" value="DEMO-001"><button id="login">เข้าสู่ระบบจำลอง</button><button id="logout" class="secondary">ออกจากระบบ</button><p id="loginResult" aria-live="polite"></p></section>
+<section class="card"><h2>② ประตู Central Login</h2><p>จำลองการยืนยันตัวตนด้วยบัญชีทดสอบเท่านั้น</p><label for="account">บัญชีทดสอบ</label><input id="account" value="DEMO-001"><button id="login">เข้าสู่ระบบจำลอง</button><button id="logout" class="secondary">ออกจากระบบ</button><button id="verifiedLink" class="secondary">จำลองยืนยันและผูก LINE กับบัญชีที่ Login</button><p id="loginResult" aria-live="polite"></p></section>
 </div>
-<section class="card" style="margin-top:16px"><h2>③ ตัวตนกลาง</h2><p id="status">ยังไม่เข้าสู่ระบบ</p><div id="person"></div><p class="muted">บัญชีเดียว: LINE Follow สร้างข้อมูลเบื้องต้น / Login เปิดสิทธิ์จำลอง; ในระบบจริงต้องพิสูจน์การผูกบัญชีฝั่งเซิร์ฟเวอร์</p></section>
+<section class="card" style="margin-top:16px"><h2>③ ตัวตนกลาง</h2><p id="status">ยังไม่เข้าสู่ระบบ</p><div id="person"></div><p class="muted">LINE Follow เก็บตัวตนเบื้องต้น ส่วน Login ใช้บัญชีทดสอบ เมื่อจะผูกสองทางต้องกดจำลองยืนยันและผูก LINE (ระบบจริงต้องตรวจหลักฐานฝั่งเซิร์ฟเวอร์)</p></section>
 <section class="card" style="margin-top:16px"><h2>④ Central Dashboard / ช่องเสียบโมดูล</h2><div id="modules"></div><p class="muted">เพิ่มโมดูลผ่านรายการ Registry โดยไม่แก้ระบบ Login — ตัวอย่างนี้ยังไม่เปิดลิงก์ฟอร์มจริง</p></section>
 <section class="card hidden" id="formCard" style="margin-top:16px"><h2 id="formTitle"></h2><p id="formDesc"></p>
 <form id="profileForm"><label for="name">ชื่อ–นามสกุล</label><input id="name" required maxlength="120"><label for="phone">เบอร์โทร</label><input id="phone" pattern="0[0-9]{9}" inputmode="numeric" required maxlength="10"><label for="referrer">รหัสผู้แนะนำ (ถ้ามี)</label><input id="referrer" maxlength="64"><button type="submit">บันทึก / อัปเดต</button><button type="button" id="close" class="secondary">ปิด</button></form><p id="saved" aria-live="polite"></p></section>
 <section class="card" style="margin-top:16px"><h2>⑤ ประวัติการทดสอบ</h2><ol id="log"></ol><button id="reset" class="secondary">ล้างข้อมูล DEMO ในเบราว์เซอร์นี้</button><div class="notice">⚠️ ข้อมูลเก็บเฉพาะใน localStorage ของเบราว์เซอร์ ไม่ส่งไป Make.com, Cloudflare หรือ Data Store จริง ห้ามใช้ข้อมูลลูกค้าจริง</div></section>
-</main><script>
-(()=>{
-const KEY="sk-central-demo-v1";
-const defaultState=()=>({people:{},active:null,logs:[]});
-let state;try{state=JSON.parse(localStorage.getItem(KEY))||defaultState();if(!state.people||!Array.isArray(state.logs))state=defaultState()}catch{state=defaultState()}
+</main><script type="module">
+import {blankState,registerLine,createWebsiteCustomer,linkLineAfterVerifiedProof,saveForm,readForm} from "./identity-model.js";
+import {modules as registry} from "./module-registry.js";
+const STORAGE="sk-central-core-integrated-demo-v1";
 const $=id=>document.getElementById(id);
-const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
-const log=msg=>{state.logs.unshift(new Date().toLocaleString("th-TH")+": "+msg);state.logs=state.logs.slice(0,20);save()};
-const registry=[
-{id:"benefits",label:"🎁 รับสิทธิประโยชน์",desc:"บันทึก / แก้ไขข้อมูลติดต่อ"},
-{id:"member",label:"👤 สมัครสมาชิก (จำลอง)",desc:"เปิดข้อมูลเดิม / อัปเดต — ยังไม่สร้างรหัสสมาชิกจริง"},
-{id:"vehicle",label:"🚗 ข้อมูลรถยนต์",desc:"ช่องเสียบสำรอง: ยังไม่พร้อม",disabled:true},
-{id:"accident",label:"🛡️ ประกันอุบัติเหตุ",desc:"ช่องเสียบสำรอง: ยังไม่พร้อม",disabled:true}
-];
-function activePerson(){return state.active?state.people[state.active]:null}
+let state;try{state=JSON.parse(localStorage.getItem(STORAGE))||blankState();if(!state.customers||!state.lineIndex||!state.forms)state=blankState()}catch{state=blankState()}
+let active=null;
+function persist(){localStorage.setItem(STORAGE,JSON.stringify(state))}
+function record(message){state.events.push({type:"DEMO",message,time:new Date().toLocaleString("th-TH")});state.events=state.events.slice(-30);persist()}
 function render(){
-const person=activePerson();$("status").textContent=person?"เข้าสู่ระบบจำลองสำเร็จ • customer_id: "+person.id:"ยังไม่เข้าสู่ระบบ";
-$("person").textContent=person?"LINE ID: "+(person.line||"ยังไม่ผูก")+" • ข้อมูล: "+(person.profile?.name||"ยังไม่กรอก"):"";
-$("modules").replaceChildren();registry.forEach(m=>{const b=document.createElement("button");b.textContent=m.label;b.disabled=!person||m.disabled;b.title=m.desc;b.addEventListener("click",()=>openModule(m));$("modules").append(b)});
-$("log").replaceChildren();state.logs.forEach(entry=>{const li=document.createElement("li");li.textContent=entry;$("log").append(li)});
+ const current=active?state.customers[active]:null;
+ $("status").textContent=current?"บัญชีทดสอบที่ใช้งาน: "+current.customer_id:"ยังไม่เข้าสู่ระบบจำลอง";
+ $("person").textContent=current?"LINE ID: "+(current.line_user_id||"ยังไม่ได้ผูก")+" • Member ID: "+(current.member_id||"ยังไม่มี"):"";
+ $("modules").replaceChildren();
+ registry.forEach(m=>{
+  const button=document.createElement("button");
+  button.textContent=m.label;
+  button.disabled=!current||!m.enabled;
+  button.title=m.enabled?"โมดูล DEMO": "ช่องเสียบสำหรับอนาคต";
+  button.addEventListener("click",()=>openModule(m));
+  $("modules").append(button);
+ });
+ $("log").replaceChildren();
+ [...state.events].reverse().forEach(item=>{const li=document.createElement("li");li.textContent=(item.time||"")+": "+(item.message||item.type);$("log").append(li)});
 }
-$("follow").addEventListener("click",()=>{const line=$("line").value.trim();if(!/^U[A-Za-z0-9_]{4,80}$/.test(line)){$("followResult").textContent="กรอก LINE User ID ทดสอบที่ขึ้นต้นด้วย U";return}
-let p=Object.values(state.people).find(x=>x.line===line);if(!p){p={id:"DEMO-001",line,profile:null};if(state.people[p.id]&&state.people[p.id].line!==line){$("followResult").textContent="พบตัวตนอื่นอยู่แล้ว — DEMO ไม่รวมบัญชีโดยอัตโนมัติ";return}state.people[p.id]=p;log("LINE Follow จำลอง: สร้าง "+p.id)}else log("LINE Follow จำลอง: พบตัวตนเดิม ไม่สร้างซ้ำ");
-$("followResult").textContent="รับ LINE User ID แล้ว (ยังไม่ Login) • "+p.id;save();render()});
-$("login").addEventListener("click",()=>{const id=$("account").value.trim();if(id!=="DEMO-001"){$("loginResult").textContent="ตัวอย่างรองรับเฉพาะ DEMO-001";return}
-if(!state.people[id])state.people[id]={id,line:null,profile:null};state.active=id;log("Login จำลอง: "+id);$("loginResult").textContent="เข้าใช้งาน DEMO สำเร็จ (ไม่ใช่การยืนยันตัวตนจริง)";render()});
-$("logout").addEventListener("click",()=>{state.active=null;$("formCard").classList.add("hidden");log("ออกจาก DEMO");render()});
-function openModule(m){const p=activePerson();if(!p)return;$("formCard").classList.remove("hidden");$("formTitle").textContent=m.label;$("formDesc").textContent=m.desc;$("formCard").dataset.module=m.id;$("name").value=p.profile?.name||"";$("phone").value=p.profile?.phone||"";$("referrer").value=p.profile?.referrer||"";$("saved").textContent=p.profile?"พบข้อมูลเดิมแล้ว แก้ไขได้":"ยังไม่มีข้อมูล เปิดช่องว่างให้กรอก";$("formCard").scrollIntoView({behavior:"smooth",block:"nearest"})}
-$("profileForm").addEventListener("submit",e=>{e.preventDefault();const p=activePerson();if(!p)return;const name=$("name").value.trim(),phone=$("phone").value.trim(),referrer=$("referrer").value.trim();if(!name||!/^0[0-9]{9}$/.test(phone)){$("saved").textContent="ตรวจสอบชื่อและเบอร์โทร 10 หลัก";return}const was=!!p.profile;p.profile={name,phone,referrer};log((was?"อัปเดต":"บันทึก")+"ข้อมูล "+p.id+" ผ่าน "+$("formCard").dataset.module);$("saved").textContent="บันทึก DEMO แล้ว — เปิดโมดูลเดิมอีกครั้งจะเห็นข้อมูลล่าสุด";render()});
+function showMessage(id,message){$(id).textContent=message}
+$("follow").addEventListener("click",()=>{
+ try{
+  const value=$("line").value.trim();
+  const result=registerLine(state,value);
+  record((result.created?"LINE Follow เพิ่มลูกค้า: ":"LINE Follow พบลูกค้าเดิม: ")+result.customer_id);
+  showMessage("followResult","รับ LINE ID จำลองแล้ว • "+result.customer_id+" (ยังไม่ Login)");
+ }catch(err){showMessage("followResult","ไม่สำเร็จ: "+err.message)}
+ render();
+});
+$("login").addEventListener("click",()=>{
+ if($("account").value.trim()!=="DEMO-001"){showMessage("loginResult","รองรับบัญชีทดสอบ DEMO-001 เท่านั้น");return}
+ // A fixed demo website persona; never infer account ownership from matching names/phones.
+ const existing=Object.values(state.customers).find(c=>c.demo_login===true);
+ active=existing?.customer_id||createWebsiteCustomer(state);
+ state.customers[active].demo_login=true;
+ record("เข้า Central Login จำลอง: "+active);
+ showMessage("loginResult","Login จำลองสำเร็จ — ยังไม่ยืนยัน LINE จริง");
+ render();
+});
+$("verifiedLink").addEventListener("click",()=>{
+ if(!active){showMessage("loginResult","กรุณา Login จำลองก่อน");return}
+ const line=$("line").value.trim();
+ // This explicit action simulates an external proof step; NEVER expose verified=true from browser in production.
+ try{
+  if(state.lineIndex[line]&&state.lineIndex[line]!==active){
+   showMessage("loginResult","LINE นี้มีบัญชีลูกค้าเดิมแล้ว ต้องผ่านกระบวนการรวมบัญชีที่ปลอดภัย ไม่รวมอัตโนมัติ");
+   record("บล็อกการผูกซ้ำ: "+line);
+   render();return;
+  }
+  linkLineAfterVerifiedProof(state,active,line,true);
+  record("จำลองผ่านการพิสูจน์ตัวตนและผูก LINE: "+active);
+  showMessage("loginResult","จำลองผูก LINE สำเร็จ (ไม่ใช่การตรวจ token จริง)");
+ }catch(err){showMessage("loginResult","ผูกไม่ได้: "+err.message)}
+ render();
+});
+$("logout").addEventListener("click",()=>{active=null;$("formCard").classList.add("hidden");record("ออกจากระบบจำลอง");render()});
+function openModule(module){
+ if(!active||!module.enabled)return;
+ const key=module.id==="member-registration"?"member-profile":module.id;
+ $("formCard").dataset.module=key;
+ $("formTitle").textContent=module.label;
+ $("formDesc").textContent=key==="member-profile"?"ทดลองอ่าน/แก้ไขข้อมูลสมาชิก โดยยังไม่สมัครสมาชิกจริง":"ข้อมูลรับสิทธิประโยชน์";
+ const profile=readForm(state,active,active,key);
+ $("name").value=profile?.name||"";
+ $("phone").value=profile?.phone||"";
+ $("referrer").value=profile?.referrer||"";
+ $("saved").textContent=profile?"พบข้อมูลเดิม เวอร์ชัน "+profile.version+" — แก้ไขได้":"ยังไม่มีข้อมูล เปิดฟอร์มครั้งแรก";
+ $("formCard").classList.remove("hidden");
+ $("formCard").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+$("profileForm").addEventListener("submit",event=>{
+ event.preventDefault();
+ if(!active)return;
+ const name=$("name").value.trim(),phone=$("phone").value.trim(),referrer=$("referrer").value.trim();
+ if(!name||!/^0[0-9]{9}$/.test(phone)){showMessage("saved","ตรวจสอบชื่อและเบอร์ 10 หลัก");return}
+ try{
+  const module=$("formCard").dataset.module;
+  const saved=saveForm(state,active,active,module,{name,phone,referrer});
+  record("บันทึก "+module+" เวอร์ชัน "+saved.version+" บัญชี "+active);
+  showMessage("saved","สำเร็จ • เวอร์ชัน "+saved.version+" — เปิดใหม่เพื่อเรียกดูข้อมูลเดิม");
+ }catch(err){showMessage("saved","บันทึกไม่ได้: "+err.message)}
+ render();
+});
 $("close").addEventListener("click",()=>$("formCard").classList.add("hidden"));
-$("reset").addEventListener("click",()=>{if(!confirm("ล้างข้อมูล DEMO ทั้งหมดในเบราว์เซอร์นี้?"))return;state=defaultState();save();$("formCard").classList.add("hidden");$("followResult").textContent="";$("loginResult").textContent="";render()});
+$("reset").addEventListener("click",()=>{
+ if(!confirm("ลบข้อมูลจำลองในเบราว์เซอร์นี้ทั้งหมด?"))return;
+ state=blankState();active=null;persist();$("formCard").classList.add("hidden");
+ showMessage("followResult","");showMessage("loginResult","");render();
+});
 render();
-})();
 </script></body></html>
