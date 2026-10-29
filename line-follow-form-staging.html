@@ -27,6 +27,8 @@
           <button type="submit" id="submit-btn" disabled>✨ บันทึกข้อมูล รับสิทธิประโยชน์</button>
         <button type="button" id="check-status" class="back-btn" hidden>ตรวจสอบผลการบันทึก</button>
         </form>
+        <button type="button" id="test-status" class="back-btn" hidden>ทดสอบการเชื่อมต่อ TEST</button>
+        <p id="test-result" role="status" aria-live="polite" hidden style="margin:12px 0 0;padding:11px 13px;border-radius:10px;background:#edf8ef;border:1px solid #c8e1cd;font-size:13px;line-height:1.6"></p>
         <p class="privacy">ข้อมูลจะถูกส่งเพื่อบันทึกเมื่อคุณกดยืนยัน<br>การกรอกฟอร์มไม่ทำให้สถานะ ACTIVE อัตโนมัติ</p>
       </div>
       <div class="success" id="success" hidden tabindex="-1">
@@ -53,9 +55,12 @@
     let ready = false;
     let initializing = false;
     let sending = false;
+    let testing = false;
     let completed = false;
     let pendingId = null;
     const checkStatus = document.getElementById('check-status');
+    const testStatus = document.getElementById('test-status');
+    const testResult = document.getElementById('test-result');
     const showError = (message) => {
       error.textContent = message;
       error.style.display = 'block';
@@ -98,6 +103,8 @@
         login.disabled = false;
         submit.disabled = !ready || !!pendingId;
         checkStatus.disabled = !ready;
+        testStatus.hidden = !ready || completed;
+        testStatus.disabled = !ready || completed;
       }
     }
     login.addEventListener('click', () => connectLine(true));
@@ -137,6 +144,7 @@
       submit.disabled = true;
       submit.textContent = checking ? 'กำลังตรวจสอบผล…' : 'กำลังบันทึกข้อมูล…';
       checkStatus.disabled = true;
+      testStatus.disabled = true;
       form.setAttribute('aria-busy', 'true');
       const inputs = [nameInput, phoneInput, referrerInput];
       inputs.forEach(input => { input.disabled = true; });
@@ -190,6 +198,8 @@
         submit.disabled = completed || !ready || !!pendingId;
         checkStatus.hidden = completed || !pendingId;
         checkStatus.disabled = !ready;
+        testStatus.hidden = completed || !ready;
+        testStatus.disabled = completed || !ready || testing;
         submit.textContent = '✨ บันทึกข้อมูล รับสิทธิประโยชน์';
         form.setAttribute('aria-busy', 'false');
         inputs.forEach(input => { input.disabled = completed || !!pendingId; });
@@ -197,6 +207,44 @@
     }
     form.addEventListener('submit', event => send(event));
     checkStatus.addEventListener('click', event => send(event, true));
+    testStatus.addEventListener('click', async () => {
+      if (testing || sending || completed) return;
+      testResult.hidden = true;
+      if (!ready || !window.liff || !liff.isLoggedIn()) {
+        testResult.textContent = 'ทดสอบไม่สำเร็จ (HTTP 401)';
+        testResult.hidden = false;
+        return;
+      }
+      const id_token = liff.getIDToken();
+      if (!id_token) {
+        testResult.textContent = 'ทดสอบไม่สำเร็จ (HTTP 401)';
+        testResult.hidden = false;
+        return;
+      }
+      testing = true;
+      testStatus.disabled = true;
+      testStatus.textContent = 'กำลังทดสอบการเชื่อมต่อ…';
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 35000);
+      try {
+        const response = await fetch(API_URL + '/test-status', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          credentials: 'omit', cache: 'no-store', redirect: 'error', signal: controller.signal,
+          body: JSON.stringify({ id_token })
+        });
+        const result = await response.json().catch(() => null);
+        testResult.textContent = response.status === 200 && result?.success === true && result?.test === true
+          ? 'ทดสอบการเชื่อมต่อ TEST สำเร็จ' : `ทดสอบไม่สำเร็จ (HTTP ${response.status})`;
+      } catch {
+        testResult.textContent = 'ทดสอบไม่สำเร็จ (HTTP 0)';
+      } finally {
+        clearTimeout(timer);
+        testing = false;
+        testStatus.disabled = !ready || completed;
+        testStatus.textContent = 'ทดสอบการเชื่อมต่อ TEST';
+        testResult.hidden = false;
+      }
+    });
     document.getElementById('close-line').addEventListener('click', () => {
       if (window.liff && liff.isInClient()) liff.closeWindow();
     });
