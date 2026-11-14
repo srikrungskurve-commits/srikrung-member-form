@@ -22,7 +22,7 @@
         <form id="form" novalidate>
           <div class="field"><label for="name"><span class="number">1</span><span>ชื่อ–นามสกุล <em>*</em></span></label><input id="name" name="full_name" placeholder="กรอกชื่อ–นามสกุล" required maxlength="120"></div>
           <div class="field"><label for="phone"><span class="number">2</span><span>เบอร์โทรศัพท์ <em>*</em></span></label><input id="phone" name="phone" type="tel" pattern="0[0-9]{9}" title="กรอกเบอร์โทร 10 หลัก เริ่มด้วย 0" inputmode="numeric" maxlength="10" placeholder="กรอกเบอร์โทรศัพท์" required><p class="hint">ตัวเลข 10 หลัก ไม่ต้องใส่ขีด</p></div>
-          <div class="field"><label for="referrer"><span class="number">3</span><span>รหัสผู้แนะนำ <small>(ถ้ามี)</small></span></label><input id="referrer" name="line_follow_referrer_id" placeholder="ไม่มีก็เว้นว่างได้" maxlength="64" pattern="[A-Za-z0-9_-]*"><p class="hint">ไม่บังคับกรอก ใช้ตัวอักษรอังกฤษ ตัวเลข _ หรือ -</p></div>
+          <div class="field"><label for="referrer"><span class="number">3</span><span>ข้อมูลผู้แนะนำ <small>(ถ้ามี)</small></span></label><input id="referrer" name="line_follow_referrer_id" placeholder="ชื่อ–นามสกุล เบอร์โทร หรือรหัส (เว้นว่างได้)" maxlength="200"><p class="hint">ไม่บังคับกรอก จะระบุชื่อ เบอร์โทร รหัส หรือเว้นว่างก็ได้</p></div>
           <p id="form-error" tabindex="-1" role="alert" aria-live="polite" style="display:none;background:#fff1f1;border:1px solid #f0c5c5;color:#a02727;padding:13px;border-radius:12px;margin-top:12px;font-size:14px"></p>
           <button type="submit" id="submit-btn" disabled>✨ บันทึกข้อมูล รับสิทธิประโยชน์</button>
         <button type="button" id="check-status" class="back-btn" hidden>ตรวจสอบผลการบันทึก</button>
@@ -124,8 +124,8 @@
         showError('กรุณากรอกเบอร์โทรศัพท์ 10 หลัก โดยขึ้นต้นด้วย 0');
         phoneInput.focus(); return;
       }
-      if (!checking && !/^[A-Za-z0-9_-]{0,64}$/.test(line_follow_referrer_id)) {
-        showError('รหัสผู้แนะนำใช้ตัวอักษรอังกฤษ ตัวเลข _ หรือ - ไม่เกิน 64 ตัวอักษร');
+      if (!checking && ([...line_follow_referrer_id].length > 200 || /[\p{Cc}\p{Cf}]/u.test(line_follow_referrer_id))) {
+        showError('ข้อมูลผู้แนะนำต้องไม่เกิน 200 ตัวอักษร และไม่มีอักขระควบคุม');
         referrerInput.focus(); return;
       }
       const id_token = liff.getIDToken();
