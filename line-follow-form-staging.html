@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="th">
 <head>
+<meta name="app-version" content="4.0.0-staging.2">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Srikrung S-Kurve | ฟอร์มข้อมูลติดต่อ</title>
@@ -19,16 +20,14 @@
         <div class="notice">💙 กรอกง่าย ไม่บังคับ ใช้เวลาเพียงครู่เดียว</div>
         <p id="line-status" role="status" aria-live="polite">กำลังเชื่อมต่อ LINE…</p>
         <button type="button" id="line-login" hidden>เข้าสู่ระบบ LINE / ลองเชื่อมต่ออีกครั้ง</button>
-        <form id="form" novalidate>
+        <form id="form" novalidate hidden>
           <div class="field"><label for="name"><span class="number">1</span><span>ชื่อ–นามสกุล <em>*</em></span></label><input id="name" name="full_name" placeholder="กรอกชื่อ–นามสกุล" required maxlength="120"></div>
           <div class="field"><label for="phone"><span class="number">2</span><span>เบอร์โทรศัพท์ <em>*</em></span></label><input id="phone" name="phone" type="tel" pattern="0[0-9]{9}" title="กรอกเบอร์โทร 10 หลัก เริ่มด้วย 0" inputmode="numeric" maxlength="10" placeholder="กรอกเบอร์โทรศัพท์" required><p class="hint">ตัวเลข 10 หลัก ไม่ต้องใส่ขีด</p></div>
-          <div class="field"><label for="referrer"><span class="number">3</span><span>รหัสผู้แนะนำ <small>(ถ้ามี)</small></span></label><input id="referrer" name="line_follow_referrer_id" placeholder="ไม่มีก็เว้นว่างได้" maxlength="64" pattern="[A-Za-z0-9_-]*"><p class="hint">ไม่บังคับกรอก ใช้ตัวอักษรอังกฤษ ตัวเลข _ หรือ -</p></div>
+          <div class="field"><label for="referrer"><span class="number">3</span><span>ข้อมูลผู้แนะนำ <small>(ถ้ามี)</small></span></label><input id="referrer" name="line_follow_referrer_id" placeholder="ชื่อ–นามสกุล เบอร์โทร หรือรหัส (เว้นว่างได้)" maxlength="200"><p class="hint">ไม่บังคับกรอก จะระบุชื่อ เบอร์โทร รหัส หรือเว้นว่างก็ได้</p></div>
           <p id="form-error" tabindex="-1" role="alert" aria-live="polite" style="display:none;background:#fff1f1;border:1px solid #f0c5c5;color:#a02727;padding:13px;border-radius:12px;margin-top:12px;font-size:14px"></p>
           <button type="submit" id="submit-btn" disabled>✨ บันทึกข้อมูล รับสิทธิประโยชน์</button>
         <button type="button" id="check-status" class="back-btn" hidden>ตรวจสอบผลการบันทึก</button>
         </form>
-        <button type="button" id="test-status" class="back-btn" hidden>ทดสอบการเชื่อมต่อ TEST</button>
-        <p id="test-result" role="status" aria-live="polite" hidden style="margin:12px 0 0;padding:11px 13px;border-radius:10px;background:#edf8ef;border:1px solid #c8e1cd;font-size:13px;line-height:1.6"></p>
         <p class="privacy">ข้อมูลจะถูกส่งเพื่อบันทึกเมื่อคุณกดยืนยัน<br>การกรอกฟอร์มไม่ทำให้สถานะ ACTIVE อัตโนมัติ</p>
       </div>
       <div class="success" id="success" hidden tabindex="-1">
@@ -55,12 +54,9 @@
     let ready = false;
     let initializing = false;
     let sending = false;
-    let testing = false;
     let completed = false;
     let pendingId = null;
     const checkStatus = document.getElementById('check-status');
-    const testStatus = document.getElementById('test-status');
-    const testResult = document.getElementById('test-result');
     const showError = (message) => {
       error.textContent = message;
       error.style.display = 'block';
@@ -71,6 +67,7 @@
       if (initializing || sending || completed) return;
       initializing = true;
       ready = false;
+      form.hidden = true;
       submit.disabled = true;
       login.disabled = true;
       status.textContent = 'กำลังเชื่อมต่อ LINE…';
@@ -92,26 +89,55 @@
           }
           return;
         }
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 35000);
+        let result;
+        try {
+          const response = await fetch(API_URL + '/lookup', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            credentials: 'omit', cache: 'no-store', redirect: 'error',
+            signal: controller.signal, body: JSON.stringify({ id_token: liff.getIDToken() })
+          });
+          result = await response.json();
+          if (response.status !== 200 || result.success !== true ||
+              result.identity_verified !== true || typeof result.can_register !== 'boolean')
+            throw new Error('status_unavailable');
+        } finally { clearTimeout(timer); }
+        if (result.status === 'REVIEW_REQUIRED') {
+          status.textContent = 'พบข้อมูลบัญชีที่ต้องตรวจสอบ กรุณาติดต่อเจ้าหน้าที่';
+          login.hidden = false;
+          login.textContent = 'ตรวจสอบสถานะอีกครั้ง';
+          return;
+        }
+        if (result.registered === true && result.status === 'ALREADY_REGISTERED' &&
+            result.can_register === false) {
+          completed = true;
+          status.textContent = 'คุณได้ลงทะเบียนรับสิทธิพิเศษเรียบร้อยแล้ว';
+          login.hidden = true;
+          return;
+        }
+        if (result.status !== 'NOT_REGISTERED' || result.registered !== false ||
+            result.can_register !== true) throw new Error('invalid_status');
         ready = true;
+        form.hidden = false;
         login.hidden = true;
-        status.textContent = 'เชื่อมต่อ LINE แล้ว พร้อมบันทึกข้อมูล';
+        status.textContent = 'ตรวจสอบ LINE แล้ว สามารถลงทะเบียนรับสิทธิพิเศษได้';
       } catch {
-        status.textContent = 'เชื่อมต่อ LINE ไม่สำเร็จ กรุณาลองอีกครั้ง';
+        status.textContent = 'ยังตรวจสอบสถานะการลงทะเบียนไม่ได้ กรุณาลองอีกครั้งหรือติดต่อเจ้าหน้าที่';
+        login.textContent = 'ตรวจสอบสถานะอีกครั้ง';
         login.hidden = false;
       } finally {
         initializing = false;
         login.disabled = false;
         submit.disabled = !ready || !!pendingId;
         checkStatus.disabled = !ready;
-        testStatus.hidden = !ready || completed;
-        testStatus.disabled = !ready || completed;
       }
     }
     login.addEventListener('click', () => connectLine(true));
     async function send(event, checking = false) {
       event.preventDefault();
       if (checking && !pendingId) return;
-      if (sending || completed || (pendingId && !checking)) return;
+      if (sending || completed || !ready || (pendingId && !checking)) return;
       error.style.display = 'none';
       if (!ready || !window.liff || !liff.isLoggedIn()) {
         ready = false;
@@ -131,8 +157,8 @@
         showError('กรุณากรอกเบอร์โทรศัพท์ 10 หลัก โดยขึ้นต้นด้วย 0');
         phoneInput.focus(); return;
       }
-      if (!checking && !/^[A-Za-z0-9_-]{0,64}$/.test(line_follow_referrer_id)) {
-        showError('รหัสผู้แนะนำใช้ตัวอักษรอังกฤษ ตัวเลข _ หรือ - ไม่เกิน 64 ตัวอักษร');
+      if (!checking && ([...line_follow_referrer_id].length > 200 || /[\p{Cc}\p{Cf}]/u.test(line_follow_referrer_id))) {
+        showError('ข้อมูลผู้แนะนำต้องไม่เกิน 200 ตัวอักษร และไม่มีอักขระควบคุม');
         referrerInput.focus(); return;
       }
       const id_token = liff.getIDToken();
@@ -144,7 +170,6 @@
       submit.disabled = true;
       submit.textContent = checking ? 'กำลังตรวจสอบผล…' : 'กำลังบันทึกข้อมูล…';
       checkStatus.disabled = true;
-      testStatus.disabled = true;
       form.setAttribute('aria-busy', 'true');
       const inputs = [nameInput, phoneInput, referrerInput];
       inputs.forEach(input => { input.disabled = true; });
@@ -168,6 +193,8 @@
         const result = await response.json();
         if (response.status === 409 && result?.error === 'already_registered' && result.registered === true) {
           completed = true;
+          form.hidden = true;
+          status.textContent = 'คุณได้ลงทะเบียนรับสิทธิพิเศษเรียบร้อยแล้ว';
           showError('คุณได้ลงทะเบียนรับสิทธิพิเศษเรียบร้อยแล้ว');
           error.focus();
           return;
@@ -198,8 +225,6 @@
         submit.disabled = completed || !ready || !!pendingId;
         checkStatus.hidden = completed || !pendingId;
         checkStatus.disabled = !ready;
-        testStatus.hidden = completed || !ready;
-        testStatus.disabled = completed || !ready || testing;
         submit.textContent = '✨ บันทึกข้อมูล รับสิทธิประโยชน์';
         form.setAttribute('aria-busy', 'false');
         inputs.forEach(input => { input.disabled = completed || !!pendingId; });
@@ -207,44 +232,6 @@
     }
     form.addEventListener('submit', event => send(event));
     checkStatus.addEventListener('click', event => send(event, true));
-    testStatus.addEventListener('click', async () => {
-      if (testing || sending || completed) return;
-      testResult.hidden = true;
-      if (!ready || !window.liff || !liff.isLoggedIn()) {
-        testResult.textContent = 'ทดสอบไม่สำเร็จ (HTTP 401)';
-        testResult.hidden = false;
-        return;
-      }
-      const id_token = liff.getIDToken();
-      if (!id_token) {
-        testResult.textContent = 'ทดสอบไม่สำเร็จ (HTTP 401)';
-        testResult.hidden = false;
-        return;
-      }
-      testing = true;
-      testStatus.disabled = true;
-      testStatus.textContent = 'กำลังทดสอบการเชื่อมต่อ…';
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 35000);
-      try {
-        const response = await fetch(API_URL + '/test-status', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          credentials: 'omit', cache: 'no-store', redirect: 'error', signal: controller.signal,
-          body: JSON.stringify({ id_token })
-        });
-        const result = await response.json().catch(() => null);
-        testResult.textContent = response.status === 200 && result?.success === true && result?.test === true
-          ? 'ทดสอบการเชื่อมต่อ TEST สำเร็จ' : `ทดสอบไม่สำเร็จ (HTTP ${response.status})`;
-      } catch {
-        testResult.textContent = 'ทดสอบไม่สำเร็จ (HTTP 0)';
-      } finally {
-        clearTimeout(timer);
-        testing = false;
-        testStatus.disabled = !ready || completed;
-        testStatus.textContent = 'ทดสอบการเชื่อมต่อ TEST';
-        testResult.hidden = false;
-      }
-    });
     document.getElementById('close-line').addEventListener('click', () => {
       if (window.liff && liff.isInClient()) liff.closeWindow();
     });
@@ -252,3 +239,4 @@
   </script>
 </body>
 </html>
+
